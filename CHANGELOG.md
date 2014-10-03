@@ -1,6 +1,13 @@
 CHANGELOG
 =========
 
+1.1.2 (2014-10-03)
+------------------
+
+* fix autoload-dev in composer.json, should be pointing to tests/
+* tidy up Service Provider - use bindShared function
+* clean up old unit tests in ValidatorExtensionsTest
+
 1.1.1 (2014-10-03)
 ------------------
 
