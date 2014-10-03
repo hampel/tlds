@@ -16,7 +16,7 @@ Require the package via Composer in your `composer.json`
     :::json
     {
         "require": {
-            "hampel/tlds": "~1.0"
+            "hampel/tlds": "~1.1"
         }
     }
 
