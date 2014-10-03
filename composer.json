@@ -35,6 +35,9 @@
 		"illuminate/container": "~5.0",
 		"illuminate/validation": "~5.0"
 	},
+    "suggest": {
+		"hampel/validate-laravel": "Additional validation service rules"
+    },
 	"conflicts": {
 		"hampel/validate-laravel": "<2.0"
     },
@@ -45,7 +48,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Hampel\\Tlds\\": "src/"
+            "Hampel\\Tlds\\": "tests/"
         }
 	},
  	"minimum-stability": "dev",
