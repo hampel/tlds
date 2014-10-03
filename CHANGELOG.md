@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+1.1.1 (2014-10-03)
+------------------
+
+* update package dependency for hampel/validate to ~2.2
+
 1.1.0 (2014-10-03)
 ------------------
 
