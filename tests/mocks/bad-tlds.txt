@@ -1,0 +1,6 @@
+# COMMENT LINE
+not a valid tld
+alsonotavalidtld!
+xn--
+a
+com2

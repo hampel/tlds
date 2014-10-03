@@ -1,0 +1,46 @@
+{
+    "name": "hampel/tlds",
+    "description": "Fetches the latest list of Top Level Domains from IANA",
+	"homepage" : "https://bitbucket.org/hampel/tlds",
+	"authors": [{
+		"name": "Simon Hampel",
+		"email": "simon@hampelgroup.com",
+		"homepage": "http://hampelgroup.com/",
+		"role": "Developer"
+	}],
+	"support": {
+		"email": "support@hampelgroup.com",
+		"issues": "https://bitbucket.org/hampel/tlds/issues",
+		"source": "https://bitbucket.org/hampel/tlds/src"
+	},
+	"keywords": [
+		"tld",
+		"domain",
+		"iana",
+		"domain name"
+	],
+	"license" : [
+		"MIT"
+	],
+    "require": {
+		"illuminate/support": "~5.0",
+		"guzzlehttp/guzzle": "~4.0",
+        "php": ">=5.4.0"
+    },
+	"require-dev": {
+		"phpunit/phpunit": "~4.0",
+		"mockery/mockery": "~0.9"
+	},
+    "autoload": {
+        "psr-4": {
+            "Hampel\\Tlds\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Hampel\\Tlds\\": "src/"
+        }
+	},
+ 	"minimum-stability": "dev",
+	"prefer-stable": true
+}
