@@ -1,6 +1,6 @@
 {
     "name": "hampel/tlds",
-    "description": "Fetches the latest list of Top Level Domains from IANA",
+    "description": "Fetches the latest list of Top Level Domains from IANA, plus Laravel validation service extensions for validating TLDs",
 	"homepage" : "https://bitbucket.org/hampel/tlds",
 	"authors": [{
 		"name": "Simon Hampel",
@@ -26,7 +26,7 @@
     "require": {
 		"illuminate/support": "~5.0",
 		"guzzlehttp/guzzle": "~4.0",
-		"hampel/validate": "~2.1",
+		"hampel/validate": "~2.2",
         "php": ">=5.4.0"
     },
 	"require-dev": {
