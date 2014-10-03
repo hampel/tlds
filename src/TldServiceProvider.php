@@ -65,7 +65,7 @@ class TldServiceProvider extends ServiceProvider {
 
 	protected function registerValidatorLibrary()
 	{
-		$this->app['tlds.validator'] = $this->app->share(function()
+		$this->app->bindShared('tlds.validator', function()
 		{
 			return new Validator();
 		});
