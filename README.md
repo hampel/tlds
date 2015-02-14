@@ -16,12 +16,12 @@ Require the package via Composer in your `composer.json`
     :::json
     {
         "require": {
-            "hampel/tlds": "~1.1"
+            "hampel/tlds": "~1.2"
         }
     }
 
-Note that this package relies on Laravel 5.0, which is still under development - as such, this package should not
-be considered stable yet.
+**Note** v1.1.x of this package was released while Laravel 5.0 was still under development and is not compatible with
+the final release version of Laravel 5.0. You should use v1.2 of the Tlds package for Laravel 5.0 compatibility.
 
 Run Composer to update the new requirement.
 
@@ -53,29 +53,29 @@ You may also optionally add an alias entry to the `$aliases` array in the same f
 If you want to change the default Tlds configuration, first publish it using the command:
 
     :::bash
-    $ php artisan config:publish hampel/tlds
+    $ php artisan vendor:publish --provider="Hampel\Tlds\TldServiceProvider"
 
-The config files can then be found in `config/packages/hampel/tlds/`.
+The config files can then be found in `config/tlds.php`.
 
 Configuration
 -------------
 
-Refer to the configuration files for more details about configuration options.
+Refer to the configuration file  for more details about configuration options.
 
-__cache.expiry__ - sets the cache expiry time
+__tlds.cache.expiry__ - sets the cache expiry time
 
-__cache.key__ - sets the key used to store the TLD data in the cache
+__tlds.cache.key__ - sets the key used to store the TLD data in the cache
 
-__source.type__ - set this to 'url' to retrieve the data from a website (eg IANA), set it to 'filesystem' to retrieve
+__tlds.source.type__ - set this to 'url' to retrieve the data from a website (eg IANA), set it to 'filesystem' to retrieve
 the data from a local source (you'll need to configure a Laravel filesystem 'disk' to make this work).
 
-__source.url__ - if source.type is set to 'url', enter the URL to retrieve the data from. By default this is set to the
+__tlds.source.url__ - if source.type is set to 'url', enter the URL to retrieve the data from. By default this is set to the
 IANA source file
 
-__source.disk__ - if source.type is set to 'filesystem', enter the name of the Laravel filesystem disk you have
+__tlds.source.disk__ - if source.type is set to 'filesystem', enter the name of the Laravel filesystem disk you have
 configured in the 'filesystems.disks' configuration option
 
-__source.path__ - if source.type is set to 'filesystem', enter the path to the data file relative to the root path
+__tlds.source.path__ - if source.type is set to 'filesystem', enter the path to the data file relative to the root path
 configured for the disk in the 'fileystems.disks' configuration option (eg. 'tlds/tlds-alpha-by-domain.txt')
 
 Usage
