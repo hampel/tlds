@@ -1,6 +1,12 @@
 CHANGELOG
 =========
 
+1.2.0 (2015-02-14)
+------------------
+
+* updated to be fully Laravel 5.0 (release) compatible
+* updated unit tests
+
 1.1.2 (2014-10-03)
 ------------------
 
