@@ -14,12 +14,12 @@ class TldsCacheTest extends \PHPUnit_Framework_TestCase
 
 	public function testCache()
 	{
-		$this->config->shouldReceive('get')->once()->with('tlds::cache.key')->andReturn('tlds');
-		$this->config->shouldReceive('get')->once()->with('tlds::cache.expiry')->andReturn(1440);
+		$this->config->shouldReceive('get')->once()->with('tlds.cache.key')->andReturn('tlds');
+		$this->config->shouldReceive('get')->once()->with('tlds.cache.expiry')->andReturn(1440);
 		$this->cache->shouldReceive('remember')->once()->with('tlds', 1440, Mockery::on(function($closure)
 		{
-			$this->config->shouldReceive('get')->once()->with('tlds::source.type')->andReturn('filesystem');
-			$this->config->shouldReceive('get')->once()->with('tlds::source.path')->andReturn('tlds.txt');
+			$this->config->shouldReceive('get')->once()->with('tlds.source.type')->andReturn('filesystem');
+			$this->config->shouldReceive('get')->once()->with('tlds.source.path')->andReturn('tlds.txt');
 			$this->log->shouldReceive('info')->once()->with('Fetching updated TLDs from Filesystem: tlds.txt');
 			$this->filesystem->shouldReceive('get')->once()->with('tlds.txt')->andReturn(file_get_contents(__DIR__ . '/mocks/tlds-alpha-by-domain.txt'));
 			$this->log->shouldReceive('info')->once()->with('Added 725 TLDs to cache');
