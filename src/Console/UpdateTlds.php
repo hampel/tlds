@@ -64,8 +64,8 @@ class UpdateTlds extends Command {
 		{
 			$tlds = $this->tlds->fresh();
 
-			$expiry = $this->config->get('tlds::cache.expiry');
-			$key = $this->config->get('tlds::cache.key');
+			$expiry = $this->config->get('tlds.cache.expiry');
+			$key = $this->config->get('tlds.cache.key');
 
 			$this->cache->put($key, $tlds, $expiry);
 

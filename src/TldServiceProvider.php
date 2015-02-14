@@ -30,37 +30,8 @@ class TldServiceProvider extends ServiceProvider {
 	 */
 	public function register()
 	{
-		$this->registerTlds();
 		$this->registerValidatorLibrary();
 		$this->registerCommands();
-	}
-
-	protected function registerTlds()
-	{
-		$this->app->bindShared('tlds', function ()
-		{
-			$type = $this->app['config']->get('tlds::source.type');
-
-			return new Tlds(
-				$this->app['config'],
-				$this->app['cache.store'],
-				$this->app['log'],
-				$type == 'filesystem' ? $this->getFilesystem($type) : null,
-				$type == 'url' ? new Client() : null
-			);
-		});
-	}
-
-	/**
-	 * @param $type
-	 */
-	protected function getFilesystem($type)
-	{
-		$disk = $this->app['config']->get('tlds::source.disk');
-
-		if ($disk == 'default') $disk = $this->app['config']->get('filesystems.default');
-
-		return $this->app['filesystem']->disk($disk);
 	}
 
 	protected function registerValidatorLibrary()
@@ -88,15 +59,67 @@ class TldServiceProvider extends ServiceProvider {
 	 */
 	public function boot()
 	{
-		$this->package('hampel/tlds', 'tlds', __DIR__);
+		$this->defineConfiguration();
+		$this->defineTranslations();
 
-		$this->app->bind('Hampel\Tlds\Validation\ValidatorExtensions', function()
-		{
-			return new ValidatorExtensions($this->app['tlds.validator'], $this->app['tlds']);
-		});
-
+		$this->registerTlds();
+		$this->registerValidatorExtension();
 		$this->addNewRules();
 		$this->addNewReplacers();
+	}
+
+	protected function defineConfiguration()
+	{
+		$this->publishes([
+			__DIR__ . '/config/tlds.php' => config_path('tlds.php'),
+		], 'config');
+
+		$this->mergeConfigFrom(
+			__DIR__ . '/config/tlds.php', 'tlds'
+		);
+	}
+
+	protected function defineTranslations()
+	{
+		$this->loadTranslationsFrom(__DIR__ . '/lang', 'tlds');
+	}
+
+	protected function registerTlds()
+	{
+		$this->app->bindShared('tlds', function ()
+		{
+			$type = $this->app['config']->get('tlds.source.type');
+
+			return new Tlds(
+				$this->app['config'],
+				$this->app['cache.store'],
+				$this->app['log'],
+				$type == 'filesystem' ? $this->getFilesystem($type) : null,
+				$type == 'url' ? new Client() : null
+			);
+		});
+	}
+
+	/**
+	 * @param $type
+	 */
+	protected function getFilesystem($type)
+	{
+		$disk = $this->app['config']->get('tlds.source.disk');
+
+		if ($disk == 'default') $disk = $this->app['config']->get('filesystems.default');
+
+		return $this->app['filesystem']->disk($disk);
+	}
+
+	protected function registerValidatorExtension()
+	{
+		$this->app->bind(
+			'Hampel\Tlds\Validation\ValidatorExtensions', function ()
+			{
+				return new ValidatorExtensions($this->app['tlds.validator'], $this->app['tlds']);
+			}
+		);
 	}
 
 	protected function addNewRules()

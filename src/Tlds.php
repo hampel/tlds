@@ -53,8 +53,8 @@ class Tlds
 
 	public function get()
 	{
-		$cache_key = $this->config->get('tlds::cache.key');
-		$cache_expiry = $this->config->get('tlds::cache.expiry');
+		$cache_key = $this->config->get('tlds.cache.key');
+		$cache_expiry = $this->config->get('tlds.cache.expiry');
 
 		$tlds = $this->cache->remember($cache_key, $cache_expiry, function()
 		{
@@ -94,7 +94,7 @@ class Tlds
 	 */
 	protected function fetchTlds()
 	{
-		$type = $this->config->get('tlds::source.type');
+		$type = $this->config->get('tlds.source.type');
 
 		if ($type == 'url')
 		{
@@ -108,7 +108,7 @@ class Tlds
 
 	protected function fetchTldsFromUrl()
 	{
-		$url = $this->config->get('tlds::source.url');
+		$url = $this->config->get('tlds.source.url');
 
 		$this->log->info("Fetching updated TLDs from URL: {$url}");
 
@@ -132,7 +132,7 @@ class Tlds
 
 	protected function fetchTldsFromFilesystem()
 	{
-		$path = $this->config->get('tlds::source.path');
+		$path = $this->config->get('tlds.source.path');
 
 		$this->log->info("Fetching updated TLDs from Filesystem: {$path}");
 
@@ -154,7 +154,7 @@ class Tlds
 
 	public function forget()
 	{
-		$cache_key = $this->config->get('validate-laravel::cache_key');
+		$cache_key = $this->config->get('tlds.cache.key');
 
 		$this->cache->forget($cache_key);
 	}
