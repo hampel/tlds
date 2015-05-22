@@ -159,6 +159,3 @@ class Tlds
 		$this->cache->forget($cache_key);
 	}
 }
-
-?>
- 

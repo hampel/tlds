@@ -51,5 +51,3 @@ class ValidatorExtensions
 		return str_replace(':values', implode(', ', $parameters), $message);
 	}
 }
-
-?>
