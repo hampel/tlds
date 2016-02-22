@@ -1,4 +1,4 @@
- <?php
+<?php
 /**
  * Configuration for TLD fetcher source
  *
