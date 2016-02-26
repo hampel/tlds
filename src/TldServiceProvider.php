@@ -36,7 +36,7 @@ class TldServiceProvider extends ServiceProvider {
 
 	protected function registerValidatorLibrary()
 	{
-		$this->app->bindShared('tlds.validator', function()
+		$this->app->singleton('tlds.validator', function()
 		{
 			return new Validator();
 		});
@@ -44,7 +44,7 @@ class TldServiceProvider extends ServiceProvider {
 
 	protected function registerCommands()
 	{
-		$this->app->bindShared('tlds.command.update.tlds', function()
+		$this->app->singleton('tlds.command.update.tlds', function()
 		{
 			return new UpdateTlds($this->app['tlds'], $this->app['config'], $this->app['cache.store']);
 		});
@@ -86,7 +86,7 @@ class TldServiceProvider extends ServiceProvider {
 
 	protected function registerTlds()
 	{
-		$this->app->bindShared('tlds', function ()
+		$this->app->singleton('tlds', function ()
 		{
 			$type = $this->app['config']->get('tlds.source.type');
 
