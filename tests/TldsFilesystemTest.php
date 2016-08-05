@@ -63,7 +63,9 @@ class TldsFilesystemTest extends \PHPUnit_Framework_TestCase
 		$config->shouldReceive('get')->once()->with('tlds.source.type')->andReturn('filesystem');
 		$config->shouldReceive('get')->once()->with('tlds.source.path')->andReturn('tlds.txt');
 		$log->shouldReceive('info')->once()->with('Fetching updated TLDs from Filesystem: tlds.txt');
-		$filesystem->shouldReceive('get')->once()->with('tlds.txt')->andReturn(file_get_contents(__DIR__ . '/mocks/bad-tlds.txt'));
+		$filesystem->shouldReceive('get')->once()->with('tlds.txt')->andReturn(file_get_contents(
+																			   __DIR__ . '/mock/bad-tlds.txt'
+																			   ));
 
 		$log->shouldReceive('warning')->once()->with('Skipped TLD [not a valid tld] - did not match regex validator');
 		$log->shouldReceive('warning')->once()->with('Skipped TLD [alsonotavalidtld!] - did not match regex validator');
@@ -88,7 +90,9 @@ class TldsFilesystemTest extends \PHPUnit_Framework_TestCase
 		$config->shouldReceive('get')->once()->with('tlds.source.type')->andReturn('filesystem');
 		$config->shouldReceive('get')->once()->with('tlds.source.path')->andReturn('tlds.txt');
 		$log->shouldReceive('info')->once()->with('Fetching updated TLDs from Filesystem: tlds.txt');
-		$filesystem->shouldReceive('get')->once()->with('tlds.txt')->andReturn(file_get_contents(__DIR__ . '/mocks/tlds-alpha-by-domain.txt'));
+		$filesystem->shouldReceive('get')->once()->with('tlds.txt')->andReturn(file_get_contents(
+																			   __DIR__ . '/mock/tlds-alpha-by-domain.txt'
+																			   ));
 
 		$log->shouldReceive('info')->once()->with('Added 725 TLDs to cache');
 

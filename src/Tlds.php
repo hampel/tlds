@@ -116,14 +116,14 @@ class Tlds
 
 		try
 		{
-			$response = $this->guzzle->get($url);
+			$response = $this->guzzle->request('GET', $url);
 		}
 		catch (RequestException $e)
 		{
 			throw new HttpException($e->getMessage(), $e->getCode(), $e);
 		}
 
-		$data = $response->getBody();
+		$data = strval($response->getBody());
 
 		if (empty($data)) throw new BadResponseException("No data returned when fetching TLDs from URL {$url}");
 

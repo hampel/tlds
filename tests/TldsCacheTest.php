@@ -21,7 +21,9 @@ class TldsCacheTest extends \PHPUnit_Framework_TestCase
 			$this->config->shouldReceive('get')->once()->with('tlds.source.type')->andReturn('filesystem');
 			$this->config->shouldReceive('get')->once()->with('tlds.source.path')->andReturn('tlds.txt');
 			$this->log->shouldReceive('info')->once()->with('Fetching updated TLDs from Filesystem: tlds.txt');
-			$this->filesystem->shouldReceive('get')->once()->with('tlds.txt')->andReturn(file_get_contents(__DIR__ . '/mocks/tlds-alpha-by-domain.txt'));
+			$this->filesystem->shouldReceive('get')->once()->with('tlds.txt')->andReturn(file_get_contents(
+																						 __DIR__ . '/mock/tlds-alpha-by-domain.txt'
+																						 ));
 			$this->log->shouldReceive('info')->once()->with('Added 725 TLDs to cache');
 
 			$tlds = $closure();

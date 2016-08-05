@@ -53,6 +53,7 @@ class ValidatorExtensionsTest extends \PHPUnit_Framework_TestCase
 			$this->assertEquals('net', $data[1]);
 			return true;
 		}))->andReturn(false);
+		$translator->shouldReceive('trans')->once()->with('validation.custom')->andReturn('validation.custom');
 		$translator->shouldReceive('trans')->once()->with('validation.custom.foo.domain')->andReturn('validation.custom.foo.domain');
 		$translator->shouldReceive('trans')->once()->with('validation.domain')->andReturn('validation.domain');
 		$translator->shouldReceive('trans')->once()->with('validation.attributes.foo')->andReturn('validation.attributes.foo');
@@ -112,6 +113,7 @@ class ValidatorExtensionsTest extends \PHPUnit_Framework_TestCase
 			$this->assertEquals('net', $data[1]);
 			return true;
 		}))->andReturn(false);
+		$translator->shouldReceive('trans')->once()->with('validation.custom')->andReturn('validation.custom');
 		$translator->shouldReceive('trans')->once()->with('validation.custom.foo.domain_in')->andReturn('validation.custom.foo.domain_in');
 		$translator->shouldReceive('trans')->once()->with('validation.domain_in')->andReturn('validation.domain_in');
 		$translator->shouldReceive('trans')->once()->with('validation.attributes.foo')->andReturn('validation.attributes.foo');
