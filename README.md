@@ -16,12 +16,9 @@ Require the package via Composer in your `composer.json`
     :::json
     {
         "require": {
-            "hampel/tlds": "~1.2"
+            "hampel/tlds": "~1.3"
         }
     }
-
-**Note** v1.1.x of this package was released while Laravel 5.0 was still under development and is not compatible with
-the final release version of Laravel 5.0. You should use v1.2 of the Tlds package for Laravel 5.0 compatibility.
 
 Run Composer to update the new requirement.
 

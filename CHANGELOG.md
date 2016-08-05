@@ -1,6 +1,12 @@
 CHANGELOG
 =========
 
+1.3.0 (2016-08-16)
+------------------
+
+* Convert bindShared to singleton to support Laravel 5.2. (thanks Josh Foskett <me@joshfoskett.com>)
+* updated to Laravel 5.2 and Guzzle 6.x
+
 1.2.1 (2015-05-22)
 ------------------
 
