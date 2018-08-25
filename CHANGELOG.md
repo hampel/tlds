@@ -1,6 +1,12 @@
 CHANGELOG
 =========
 
+1.4.0 (2018-08-25)
+------------------
+
+* updates to support Laravel 5.6
+* implemented Laravel package discovery in composer.json
+
 1.3.0 (2016-08-16)
 ------------------
 
