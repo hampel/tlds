@@ -31,7 +31,6 @@ class TldServiceProvider extends ServiceProvider {
 	public function register()
 	{
 		$this->registerValidatorLibrary();
-		$this->registerCommands();
 	}
 
 	protected function registerValidatorLibrary()
@@ -40,16 +39,6 @@ class TldServiceProvider extends ServiceProvider {
 		{
 			return new Validator();
 		});
-	}
-
-	protected function registerCommands()
-	{
-		$this->app->singleton('tlds.command.update.tlds', function()
-		{
-			return new UpdateTlds($this->app['tlds'], $this->app['config'], $this->app['cache.store']);
-		});
-
-		$this->commands('tlds.command.update.tlds');
 	}
 
 	/**
@@ -66,6 +55,21 @@ class TldServiceProvider extends ServiceProvider {
 		$this->registerValidatorExtension();
 		$this->addNewRules();
 		$this->addNewReplacers();
+
+		$this->registerCommands();
+	}
+
+	protected function registerCommands()
+	{
+		if ($this->app->runningInConsole())
+		{
+			$this->app->singleton('tlds.command.update.tlds', function()
+			{
+				return new UpdateTlds($this->app['tlds'], $this->app['config'], $this->app['cache.store']);
+			});
+
+			$this->commands('tlds.command.update.tlds');
+		}
 	}
 
 	protected function defineConfiguration()
