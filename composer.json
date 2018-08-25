@@ -24,15 +24,15 @@
 		"MIT"
 	],
     "require": {
-		"illuminate/support": "5.2.*",
+		"illuminate/support": "~5.5.0|~5.6.0",
 		"guzzlehttp/guzzle": "~6.0",
 		"hampel/validate": "~2.2",
-        "php": ">=5.5.9"
+        "php": ">=5.5"
     },
 	"require-dev": {
-		"mockery/mockery": "^0.9.4",
-		"illuminate/container": "5.2.*",
-		"illuminate/validation": "5.2.*"
+		"mockery/mockery": "~1.0",
+		"illuminate/container": "~5.5.0|~5.6.0",
+		"illuminate/validation": "~5.5.0|~5.6.0"
 	},
     "suggest": {
 		"hampel/validate-laravel": "Additional validation service rules"

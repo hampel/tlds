@@ -9,6 +9,8 @@ use GuzzleHttp\Exception\RequestException;
 
 class TldsUrlTest extends \PHPUnit_Framework_TestCase
 {
+	use \Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
+
 	public function setUp()
 	{
 		$this->mock = new MockHandler();
@@ -33,40 +35,40 @@ class TldsUrlTest extends \PHPUnit_Framework_TestCase
 
 	public function testRefreshGuzzleNotInitialised()
 	{
-		$config = Mockery::mock('Illuminate\Contracts\Config\Repository');
-		$cache = Mockery::mock('Illuminate\Contracts\Cache\Repository');
-		$log = Mockery::mock('Illuminate\Contracts\Logging\Log');
+		$config = Mockery::mock(\Illuminate\Contracts\Config\Repository::class);
+		$cache = Mockery::mock(\Illuminate\Contracts\Cache\Repository::class);
+		$log = Mockery::mock(\Psr\Log\LoggerInterface::class);
 
 		$config->shouldReceive('get')->once()->with('tlds.source.type')->andReturn('url');
 		$config->shouldReceive('get')->once()->with('tlds.source.url')->andReturn('http://foo.example.com/bar.txt');
 		$log->shouldReceive('info')->once()->with('Fetching updated TLDs from URL: http://foo.example.com/bar.txt');
 
-		$this->setExpectedException('Hampel\Tlds\Exceptions\ServiceProviderException', 'Guzzle client not initialised');
+		$this->setExpectedException(Exceptions\ServiceProviderException::class, 'Guzzle client not initialised');
 
 		$tlds = (new Tlds($config, $cache, $log, null, null))->fresh();
 	}
 
 	public function testRefreshGuzzleRequestException()
 	{
-		$config = Mockery::mock('Illuminate\Contracts\Config\Repository');
-		$cache = Mockery::mock('Illuminate\Contracts\Cache\Repository');
-		$log = Mockery::mock('Illuminate\Contracts\Logging\Log');
+		$config = Mockery::mock(\Illuminate\Contracts\Config\Repository::class);
+		$cache = Mockery::mock(\Illuminate\Contracts\Cache\Repository::class);
+		$log = Mockery::mock(\Psr\Log\LoggerInterface::class);
 		$this->mock->append(new RequestException('foo', new Request('GET', 'http://example.com')));
 
 		$config->shouldReceive('get')->once()->with('tlds.source.type')->andReturn('url');
 		$config->shouldReceive('get')->once()->with('tlds.source.url')->andReturn('http://foo.example.com/bar.txt');
 		$log->shouldReceive('info')->once()->with('Fetching updated TLDs from URL: http://foo.example.com/bar.txt');
 
-		$this->setExpectedException('Hampel\Tlds\Exceptions\HttpException', 'foo');
+		$this->setExpectedException(Exceptions\HttpException::class, 'foo');
 
 		$tlds = (new Tlds($config, $cache, $log, null, $this->client))->fresh();
 	}
 
 	public function testRefreshGuzzleNoContent()
 	{
-		$config = Mockery::mock('Illuminate\Contracts\Config\Repository');
-		$cache = Mockery::mock('Illuminate\Contracts\Cache\Repository');
-		$log = Mockery::mock('Illuminate\Contracts\Logging\Log');
+		$config = Mockery::mock(\Illuminate\Contracts\Config\Repository::class);
+		$cache = Mockery::mock(\Illuminate\Contracts\Cache\Repository::class);
+		$log = Mockery::mock(\Psr\Log\LoggerInterface::class);
 
 		$this->mock->append(new Response(204));
 
@@ -74,16 +76,16 @@ class TldsUrlTest extends \PHPUnit_Framework_TestCase
 		$config->shouldReceive('get')->once()->with('tlds.source.url')->andReturn('http://foo.example.com/bar.txt');
 		$log->shouldReceive('info')->once()->with('Fetching updated TLDs from URL: http://foo.example.com/bar.txt');
 
-		$this->setExpectedException('Hampel\Tlds\Exceptions\BadResponseException', 'No data returned when fetching TLDs from URL http://foo.example.com/bar.txt');
+		$this->setExpectedException(Exceptions\BadResponseException::class, 'No data returned when fetching TLDs from URL http://foo.example.com/bar.txt');
 
 		$tlds = (new Tlds($config, $cache, $log, null, $this->client))->fresh();
 	}
 
 	public function testRefreshGuzzleEmptyResponse()
 	{
-		$config = Mockery::mock('Illuminate\Contracts\Config\Repository');
-		$cache = Mockery::mock('Illuminate\Contracts\Cache\Repository');
-		$log = Mockery::mock('Illuminate\Contracts\Logging\Log');
+		$config = Mockery::mock(\Illuminate\Contracts\Config\Repository::class);
+		$cache = Mockery::mock(\Illuminate\Contracts\Cache\Repository::class);
+		$log = Mockery::mock(\Psr\Log\LoggerInterface::class);
 
 		$this->mock->append($this->loadMockResponse('empty.txt'));
 
@@ -91,16 +93,16 @@ class TldsUrlTest extends \PHPUnit_Framework_TestCase
 		$config->shouldReceive('get')->once()->with('tlds.source.url')->andReturn('http://foo.example.com/bar.txt');
 		$log->shouldReceive('info')->once()->with('Fetching updated TLDs from URL: http://foo.example.com/bar.txt');
 
-		$this->setExpectedException('Hampel\Tlds\Exceptions\BadResponseException', 'No data returned when fetching TLDs from URL http://foo.example.com/bar.txt');
+		$this->setExpectedException(Exceptions\BadResponseException::class, 'No data returned when fetching TLDs from URL http://foo.example.com/bar.txt');
 
 		$tlds = (new Tlds($config, $cache, $log, null, $this->client))->fresh();
 	}
 
 	public function testRefreshGuzzle()
 	{
-		$config = Mockery::mock('Illuminate\Contracts\Config\Repository');
-		$cache = Mockery::mock('Illuminate\Contracts\Cache\Repository');
-		$log = Mockery::mock('Illuminate\Contracts\Logging\Log');
+		$config = Mockery::mock(\Illuminate\Contracts\Config\Repository::class);
+		$cache = Mockery::mock(\Illuminate\Contracts\Cache\Repository::class);
+		$log = Mockery::mock(\Psr\Log\LoggerInterface::class);
 
 		$this->mock->append($this->loadMockResponse('tlds-guzzle.txt'));
 

@@ -1,9 +1,10 @@
 <?php  namespace Hampel\Tlds;
 
+use Psr\Log\LoggerInterface;
+
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\RequestException;
 
-use Illuminate\Contracts\Logging\Log;
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Contracts\Cache\Repository as Cache;
 use Illuminate\Contracts\Config\Repository as Config;
@@ -27,9 +28,9 @@ class Tlds
 	private $cache;
 
 	/**
-	 * @var \Illuminate\Contracts\Logging\Log
+	 * @var \Psr\Log\LoggerInterface
 	 */
-	private $log;
+	private $logger;
 
 	/**
 	 * @var \Illuminate\Contracts\Filesystem\Filesystem
@@ -41,12 +42,12 @@ class Tlds
 	 */
 	private $guzzle;
 
-	public function __construct(Config $config, Cache $cache, Log $log, Filesystem $filesystem = null, ClientInterface $guzzle = null)
+	public function __construct(Config $config, Cache $cache, LoggerInterface $logger, Filesystem $filesystem = null, ClientInterface $guzzle = null)
 	{
 
 		$this->config = $config;
 		$this->cache = $cache;
-		$this->log = $log;
+		$this->logger = $logger;
 		$this->filesystem = $filesystem;
 		$this->guzzle = $guzzle;
 	}
@@ -77,14 +78,14 @@ class Tlds
 
 			if (!preg_match('/^(?:[a-z]{2,63}|xn--[a-z0-9\-]+)$/i', $tld))
 			{
-				$this->log->warning("Skipped TLD [{$tld}] - did not match regex validator");
+				$this->logger->warning("Skipped TLD [{$tld}] - did not match regex validator");
 				continue; // skip any invalid lines
 			}
 
 			$tlds[] = strtolower($tld);
 		}
 
-		$this->log->info("Added " . count($tlds) . " TLDs to cache");
+		$this->logger->info("Added " . count($tlds) . " TLDs to cache");
 
 		return $tlds;
 	}
@@ -110,7 +111,7 @@ class Tlds
 	{
 		$url = $this->config->get('tlds.source.url');
 
-		$this->log->info("Fetching updated TLDs from URL: {$url}");
+		$this->logger->info("Fetching updated TLDs from URL: {$url}");
 
 		if (!isset($this->guzzle)) throw new ServiceProviderException("Guzzle client not initialised");
 
@@ -134,7 +135,7 @@ class Tlds
 	{
 		$path = $this->config->get('tlds.source.path');
 
-		$this->log->info("Fetching updated TLDs from Filesystem: {$path}");
+		$this->logger->info("Fetching updated TLDs from Filesystem: {$path}");
 
 		if (!isset($this->filesystem)) throw new ServiceProviderException("Filesystem not initialised");
 

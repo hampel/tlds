@@ -9,16 +9,17 @@ use \Illuminate\Contracts\Cache\Repository as Cache;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 
-class UpdateTlds extends Command {
+class UpdateTlds extends Command
+{
 
-	/**
-	 * The console command name.
-	 *
-	 * @var string
-	 */
-	protected $name = 'tld:update';
+    /**
+     * The name and signature of the console command.
+     *
+     * @var string
+     */
+    protected $signature = 'tld:update';
 
-	/**
+    /**
 	 * The console command description.
 	 *
 	 * @var string
@@ -58,7 +59,7 @@ class UpdateTlds extends Command {
 	 *
 	 * @return mixed
 	 */
-	public function fire()
+	public function handle()
 	{
 		try
 		{

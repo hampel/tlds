@@ -4,12 +4,14 @@ use Mockery;
 
 class TldsCacheTest extends \PHPUnit_Framework_TestCase
 {
+	use \Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
+
 	public function setUp()
 	{
-		$this->config = Mockery::mock('Illuminate\Contracts\Config\Repository');
-		$this->cache = Mockery::mock('Illuminate\Contracts\Cache\Repository');
-		$this->log = Mockery::mock('Illuminate\Contracts\Logging\Log');
-		$this->filesystem = Mockery::mock('Illuminate\Contracts\Filesystem\Filesystem');
+		$this->config = Mockery::mock(\Illuminate\Contracts\Config\Repository::class);
+		$this->cache = Mockery::mock(\Illuminate\Contracts\Cache\Repository::class);
+		$this->log = Mockery::mock(\Psr\Log\LoggerInterface::class);
+		$this->filesystem = Mockery::mock(\Illuminate\Contracts\Filesystem\Filesystem::class);
 	}
 
 	public function testCache()

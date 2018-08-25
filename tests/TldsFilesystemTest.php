@@ -4,67 +4,69 @@ use Mockery;
 
 class TldsFilesystemTest extends \PHPUnit_Framework_TestCase
 {
+	use \Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
+
 	public function testRefreshFilesystemNotInitialised()
 	{
-		$config = Mockery::mock('Illuminate\Contracts\Config\Repository');
-		$cache = Mockery::mock('Illuminate\Contracts\Cache\Repository');
-		$log = Mockery::mock('Illuminate\Contracts\Logging\Log');
+		$config = Mockery::mock(\Illuminate\Contracts\Config\Repository::class);
+		$cache = Mockery::mock(\Illuminate\Contracts\Cache\Repository::class);
+		$log = Mockery::mock(\Psr\Log\LoggerInterface::class);
 
 		$config->shouldReceive('get')->once()->with('tlds.source.type')->andReturn('filesystem');
 		$config->shouldReceive('get')->once()->with('tlds.source.path')->andReturn('tlds.txt');
 		$log->shouldReceive('info')->once()->with('Fetching updated TLDs from Filesystem: tlds.txt');
 
-		$this->setExpectedException('Hampel\Tlds\Exceptions\ServiceProviderException', 'Filesystem not initialised');
+		$this->setExpectedException(Exceptions\ServiceProviderException::class, 'Filesystem not initialised');
 
 		$tlds = (new Tlds($config, $cache, $log, null, null))->fresh();
 	}
 
 	public function testRefreshFilesystemFileNotFound()
 	{
-		$config = Mockery::mock('Illuminate\Contracts\Config\Repository');
-		$cache = Mockery::mock('Illuminate\Contracts\Cache\Repository');
-		$log = Mockery::mock('Illuminate\Contracts\Logging\Log');
-		$filesystem = Mockery::mock('Illuminate\Contracts\Filesystem\Filesystem');
+		$config = Mockery::mock(\Illuminate\Contracts\Config\Repository::class);
+		$cache = Mockery::mock(\Illuminate\Contracts\Cache\Repository::class);
+		$log = Mockery::mock(\Psr\Log\LoggerInterface::class);
+		$filesystem = Mockery::mock(\Illuminate\Contracts\Filesystem\Filesystem::class);
 
 		$config->shouldReceive('get')->once()->with('tlds.source.type')->andReturn('filesystem');
 		$config->shouldReceive('get')->once()->with('tlds.source.path')->andReturn('tlds.txt');
 		$log->shouldReceive('info')->once()->with('Fetching updated TLDs from Filesystem: tlds.txt');
 		$filesystem->shouldReceive('get')->once()->with('tlds.txt')->andThrow('Illuminate\Contracts\Filesystem\FileNotFoundException', 'foo');
 
-		$this->setExpectedException('Hampel\Tlds\Exceptions\FilesystemException', 'foo');
+		$this->setExpectedException(Exceptions\FilesystemException::class, 'foo');
 
 		$tlds = (new Tlds($config, $cache, $log, $filesystem, null))->fresh();
 	}
 
 	public function testRefreshFilesystemEmptyResponse()
 	{
-		$config = Mockery::mock('Illuminate\Contracts\Config\Repository');
-		$cache = Mockery::mock('Illuminate\Contracts\Cache\Repository');
-		$log = Mockery::mock('Illuminate\Contracts\Logging\Log');
-		$filesystem = Mockery::mock('Illuminate\Contracts\Filesystem\Filesystem');
+		$config = Mockery::mock(\Illuminate\Contracts\Config\Repository::class);
+		$cache = Mockery::mock(\Illuminate\Contracts\Cache\Repository::class);
+		$log = Mockery::mock(\Psr\Log\LoggerInterface::class);
+		$filesystem = Mockery::mock(\Illuminate\Contracts\Filesystem\Filesystem::class);
 
 		$config->shouldReceive('get')->once()->with('tlds.source.type')->andReturn('filesystem');
 		$config->shouldReceive('get')->once()->with('tlds.source.path')->andReturn('tlds.txt');
 		$log->shouldReceive('info')->once()->with('Fetching updated TLDs from Filesystem: tlds.txt');
 		$filesystem->shouldReceive('get')->once()->with('tlds.txt')->andReturn('');
 
-		$this->setExpectedException('Hampel\Tlds\Exceptions\BadResponseException', 'No data returned when fetching TLDs from Filesystem tlds.txt');
+		$this->setExpectedException(Exceptions\BadResponseException::class, 'No data returned when fetching TLDs from Filesystem tlds.txt');
 
 		$tlds = (new Tlds($config, $cache, $log, $filesystem, null))->fresh();
 	}
 
 	public function testRefreshFilesystemBadTlds()
 	{
-		$config = Mockery::mock('Illuminate\Contracts\Config\Repository');
-		$cache = Mockery::mock('Illuminate\Contracts\Cache\Repository');
-		$log = Mockery::mock('Illuminate\Contracts\Logging\Log');
-		$filesystem = Mockery::mock('Illuminate\Contracts\Filesystem\Filesystem');
+		$config = Mockery::mock(\Illuminate\Contracts\Config\Repository::class);
+		$cache = Mockery::mock(\Illuminate\Contracts\Cache\Repository::class);
+		$log = Mockery::mock(\Psr\Log\LoggerInterface::class);
+		$filesystem = Mockery::mock(\Illuminate\Contracts\Filesystem\Filesystem::class);
 
 		$config->shouldReceive('get')->once()->with('tlds.source.type')->andReturn('filesystem');
 		$config->shouldReceive('get')->once()->with('tlds.source.path')->andReturn('tlds.txt');
 		$log->shouldReceive('info')->once()->with('Fetching updated TLDs from Filesystem: tlds.txt');
 		$filesystem->shouldReceive('get')->once()->with('tlds.txt')->andReturn(file_get_contents(
-																			   __DIR__ . '/mock/bad-tlds.txt'
+																			    __DIR__ . '/mock/bad-tlds.txt'
 																			   ));
 
 		$log->shouldReceive('warning')->once()->with('Skipped TLD [not a valid tld] - did not match regex validator');
@@ -82,10 +84,10 @@ class TldsFilesystemTest extends \PHPUnit_Framework_TestCase
 
 	public function testRefreshFilesystem()
 	{
-		$config = Mockery::mock('Illuminate\Contracts\Config\Repository');
-		$cache = Mockery::mock('Illuminate\Contracts\Cache\Repository');
-		$log = Mockery::mock('Illuminate\Contracts\Logging\Log');
-		$filesystem = Mockery::mock('Illuminate\Contracts\Filesystem\Filesystem');
+		$config = Mockery::mock(\Illuminate\Contracts\Config\Repository::class);
+		$cache = Mockery::mock(\Illuminate\Contracts\Cache\Repository::class);
+		$log = Mockery::mock(\Psr\Log\LoggerInterface::class);
+		$filesystem = Mockery::mock(\Illuminate\Contracts\Filesystem\Filesystem::class);
 
 		$config->shouldReceive('get')->once()->with('tlds.source.type')->andReturn('filesystem');
 		$config->shouldReceive('get')->once()->with('tlds.source.path')->andReturn('tlds.txt');

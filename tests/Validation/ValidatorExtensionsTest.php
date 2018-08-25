@@ -6,17 +6,19 @@ use Mockery;
 
 class ValidatorExtensionsTest extends \PHPUnit_Framework_TestCase
 {
+	use \Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
+
 	public function testValidateDomain()
 	{
-		$validator = Mockery::mock('Hampel\Validate\Validator');
-		$tlds = Mockery::mock('Hampel\Tlds\Tlds');
+		$validator = Mockery::mock(\Hampel\Validate\Validator::class);
+		$tlds = Mockery::mock(\Hampel\Tlds\Tlds::class);
 
 		$extensions = new ValidatorExtensions($validator, $tlds);
 
-		$container = Mockery::mock('Illuminate\Container\Container');
-		$translator = Mockery::mock('Symfony\Component\Translation\TranslatorInterface');
+		$container = Mockery::mock(\Illuminate\Contracts\Container\Container::class);
+		$translator = Mockery::mock(\Illuminate\Contracts\Translation\Translator::class);
 
-		$container->shouldReceive('make')->once()->with('Hampel\Tlds\Validation\ValidatorExtensions')->andReturn($extensions);
+		$container->shouldReceive('make')->once()->with(\Hampel\Tlds\Validation\ValidatorExtensions::class)->andReturn($extensions);
 		$tlds->shouldReceive('get')->once()->with()->andReturn(['com', 'net', 'co']);
 		$validator->shouldReceive('isDomain')->once()->with('example.com', Mockery::on(function($data)
 		{
@@ -28,22 +30,22 @@ class ValidatorExtensionsTest extends \PHPUnit_Framework_TestCase
 		}))->andReturn(true);
 
 		$factory = new Factory($translator, $container);
-		$factory->extend('domain', 'Hampel\Tlds\Validation\ValidatorExtensions@validateDomain', ':attribute must be a valid domain name');
+		$factory->extend('domain', \Hampel\Tlds\Validation\ValidatorExtensions::class . '@validateDomain', ':attribute must be a valid domain name');
 		$validator = $factory->make(['foo' => 'example.com'], ['foo' => 'domain']);
 		$this->assertTrue($validator->passes());
 	}
 
 	public function testValidateDomainFails()
 	{
-		$validator = Mockery::mock('Hampel\Validate\Validator');
-		$tlds = Mockery::mock('Hampel\Tlds\Tlds');
+		$validator = Mockery::mock(\Hampel\Validate\Validator::class);
+		$tlds = Mockery::mock(\Hampel\Tlds\Tlds::class);
 
 		$extensions = new ValidatorExtensions($validator, $tlds);
 
-		$container = Mockery::mock('Illuminate\Container\Container');
-		$translator = Mockery::mock('Symfony\Component\Translation\TranslatorInterface');
+		$container = Mockery::mock(\Illuminate\Contracts\Container\Container::class);
+		$translator = Mockery::mock(\Illuminate\Contracts\Translation\Translator::class);
 
-		$container->shouldReceive('make')->once()->with('Hampel\Tlds\Validation\ValidatorExtensions')->andReturn($extensions);
+		$container->shouldReceive('make')->once()->with(\Hampel\Tlds\Validation\ValidatorExtensions::class)->andReturn($extensions);
 		$tlds->shouldReceive('get')->once()->with()->andReturn(['com', 'net', 'co']);
 		$validator->shouldReceive('isDomain')->once()->with('example.invalid-tld', Mockery::on(function($data)
 		{
@@ -56,29 +58,29 @@ class ValidatorExtensionsTest extends \PHPUnit_Framework_TestCase
 		$translator->shouldReceive('trans')->once()->with('validation.custom')->andReturn('validation.custom');
 		$translator->shouldReceive('trans')->once()->with('validation.custom.foo.domain')->andReturn('validation.custom.foo.domain');
 		$translator->shouldReceive('trans')->once()->with('validation.domain')->andReturn('validation.domain');
-		$translator->shouldReceive('trans')->once()->with('validation.attributes.foo')->andReturn('validation.attributes.foo');
+		$translator->shouldReceive('trans')->once()->with('validation.attributes')->andReturn('validation.attributes');
 
 		$factory = new Factory($translator, $container);
-		$factory->extend('domain', 'Hampel\Tlds\Validation\ValidatorExtensions@validateDomain', ':attribute must be a valid domain name');
+		$factory->extend('domain', \Hampel\Tlds\Validation\ValidatorExtensions::class . '@validateDomain', ':attribute must be a valid domain name');
 		$validator = $factory->make(['foo' => 'example.invalid-tld'], ['foo' => 'domain']);
 		$this->assertTrue($validator->fails());
 
 		$messages = $validator->messages();
-		$this->assertInstanceOf('Illuminate\Support\MessageBag', $messages);
+		$this->assertInstanceOf(\Illuminate\Support\MessageBag::class, $messages);
 		$this->assertEquals('foo must be a valid domain name', $messages->first('foo'));
 	}
 
 	public function testValidateDomainIn()
 	{
-		$validator = Mockery::mock('Hampel\Validate\Validator');
-		$tlds = Mockery::mock('Hampel\Tlds\Tlds');
+		$validator = Mockery::mock(\Hampel\Validate\Validator::class);
+		$tlds = Mockery::mock(\Hampel\Tlds\Tlds::class);
 
 		$extensions = new ValidatorExtensions($validator, $tlds);
 
-		$container = Mockery::mock('Illuminate\Container\Container');
-		$translator = Mockery::mock('Symfony\Component\Translation\TranslatorInterface');
+		$container = Mockery::mock(\Illuminate\Contracts\Container\Container::class);
+		$translator = Mockery::mock(\Illuminate\Contracts\Translation\Translator::class);
 
-		$container->shouldReceive('make')->once()->with('Hampel\Tlds\Validation\ValidatorExtensions')->andReturn($extensions);
+		$container->shouldReceive('make')->once()->with(\Hampel\Tlds\Validation\ValidatorExtensions::class)->andReturn($extensions);
 		$validator->shouldReceive('isDomain')->once()->with('example.com', Mockery::on(function($data)
 		{
 			$this->assertTrue(is_array($data));
@@ -89,22 +91,22 @@ class ValidatorExtensionsTest extends \PHPUnit_Framework_TestCase
 		}))->andReturn(true);
 
 		$factory = new Factory($translator, $container);
-		$factory->extend('domain_in', 'Hampel\Tlds\Validation\ValidatorExtensions@validateDomainIn', ':attribute TLD must be one of :values');
+		$factory->extend('domain_in', \Hampel\Tlds\Validation\ValidatorExtensions::class . '@validateDomainIn', ':attribute TLD must be one of :values');
 		$validator = $factory->make(['foo' => 'example.com'], ['foo' => 'domain_in:com,net,co']);
 		$this->assertTrue($validator->passes());
 	}
 
 	public function testValidateDomainInFails()
 	{
-		$validator = Mockery::mock('Hampel\Validate\Validator');
-		$tlds = Mockery::mock('Hampel\Tlds\Tlds');
+		$validator = Mockery::mock(\Hampel\Validate\Validator::class);
+		$tlds = Mockery::mock(\Hampel\Tlds\Tlds::class);
 
 		$extensions = new ValidatorExtensions($validator, $tlds);
 
-		$container = Mockery::mock('Illuminate\Container\Container');
-		$translator = Mockery::mock('Symfony\Component\Translation\TranslatorInterface');
+		$container = Mockery::mock(\Illuminate\Contracts\Container\Container::class);
+		$translator = Mockery::mock(\Illuminate\Contracts\Translation\Translator::class);
 
-		$container->shouldReceive('make')->twice()->with('Hampel\Tlds\Validation\ValidatorExtensions')->andReturn($extensions);
+		$container->shouldReceive('make')->once()->with(\Hampel\Tlds\Validation\ValidatorExtensions::class)->andReturn($extensions);
 		$validator->shouldReceive('isDomain')->once()->with('example.invalid-tld', Mockery::on(function($data)
 		{
 			$this->assertTrue(is_array($data));
@@ -116,16 +118,17 @@ class ValidatorExtensionsTest extends \PHPUnit_Framework_TestCase
 		$translator->shouldReceive('trans')->once()->with('validation.custom')->andReturn('validation.custom');
 		$translator->shouldReceive('trans')->once()->with('validation.custom.foo.domain_in')->andReturn('validation.custom.foo.domain_in');
 		$translator->shouldReceive('trans')->once()->with('validation.domain_in')->andReturn('validation.domain_in');
-		$translator->shouldReceive('trans')->once()->with('validation.attributes.foo')->andReturn('validation.attributes.foo');
+		$translator->shouldReceive('trans')->once()->with('validation.attributes')->andReturn('validation.attributes');
+		$container->shouldReceive('make')->once()->with(\Hampel\Tlds\Validation\ValidatorExtensions::class)->andReturn($extensions);
 
 		$factory = new Factory($translator, $container);
-		$factory->extend('domain_in', 'Hampel\Tlds\Validation\ValidatorExtensions@validateDomainIn', ':attribute TLD must be one of :values');
-		$factory->replacer('domain_in', 'Hampel\Tlds\Validation\ValidatorExtensions@replaceDomainIn');
+		$factory->extend('domain_in', \Hampel\Tlds\Validation\ValidatorExtensions::class . '@validateDomainIn', ':attribute TLD must be one of :values');
+		$factory->replacer('domain_in', \Hampel\Tlds\Validation\ValidatorExtensions::class . '@replaceDomainIn');
 		$validator = $factory->make(['foo' => 'example.invalid-tld'], ['foo' => 'domain_in:com,net,co']);
 		$this->assertTrue($validator->fails());
 
 		$messages = $validator->messages();
-		$this->assertInstanceOf('Illuminate\Support\MessageBag', $messages);
+		$this->assertInstanceOf(\Illuminate\Support\MessageBag::class, $messages);
 		$this->assertEquals('foo TLD must be one of com, net, co', $messages->first('foo'));
 	}
 
