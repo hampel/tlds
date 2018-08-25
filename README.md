@@ -16,7 +16,7 @@ Require the package via Composer in your `composer.json`
     :::json
     {
         "require": {
-            "hampel/tlds": "~1.3"
+            "hampel/tlds": "~1.4"
         }
     }
 
@@ -25,27 +25,30 @@ Run Composer to update the new requirement.
     :::bash
     $ composer update
 
+This package implements Laravel package discovery, so you should not have to add the service providers or aliases to the
+application configuration. If you decide to disable package discovery - you must manually add the following: 
+
 Open your Laravel config file `config/app.php` and add the following service providers in the `$providers` array, if
 they don't already exist:
 
     :::php
-    "providers" => array(
+    "providers" => [
 
         ...
 
-    	'Hampel\Tlds\TldServiceProvider',
+    	Hampel\Tlds\TldServiceProvider::class,
 
-    ),
+    ],
 
 You may also optionally add an alias entry to the `$aliases` array in the same file for the Tlds facade:
 
     :::php
-    "aliases" => array(
+    "aliases" => [
 
     	...
 
-    	'Tlds'			  => 'Hampel\Tlds\Facades\Tlds',
-    ),
+    	'Tlds'			  => Hampel\Tlds\Facades\Tlds::class,
+    ],
 
 If you want to change the default Tlds configuration, first publish it using the command:
 
