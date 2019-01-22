@@ -4,12 +4,9 @@
 	"homepage" : "https://bitbucket.org/hampel/tlds",
 	"authors": [{
 		"name": "Simon Hampel",
-		"email": "simon@hampelgroup.com",
-		"homepage": "http://hampelgroup.com/",
-		"role": "Developer"
+		"email": "simon@hampelgroup.com"
 	}],
 	"support": {
-		"email": "support@hampelgroup.com",
 		"issues": "https://bitbucket.org/hampel/tlds/issues",
 		"source": "https://bitbucket.org/hampel/tlds/src"
 	},
