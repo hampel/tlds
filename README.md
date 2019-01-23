@@ -11,16 +11,19 @@ Installation
 
 The recommended way of installing the Tlds package is through [Composer](http://getcomposer.org):
 
-Require the package via Composer in your `composer.json`
+	:::bash
+	composer require "hampel/tlds"
+
+Or manually define it in your `composer.json`
 
     :::json
     {
         "require": {
-            "hampel/tlds": "~1.4"
+            "hampel/tlds": "~1.5"
         }
     }
 
-Run Composer to update the new requirement.
+Then run Composer to update the new requirement.
 
     :::bash
     $ composer update
@@ -60,22 +63,24 @@ The config files can then be found in `config/tlds.php`.
 Configuration
 -------------
 
+__Notes__ some config options have changed in v1.5
+
 Refer to the configuration file  for more details about configuration options.
 
 __tlds.cache.expiry__ - sets the cache expiry time
 
 __tlds.cache.key__ - sets the key used to store the TLD data in the cache
 
-__tlds.source.type__ - set this to 'url' to retrieve the data from a website (eg IANA), set it to 'filesystem' to retrieve
+__tlds.source__ - set this to 'url' to retrieve the data from a website (eg IANA), set it to 'filesystem' to retrieve
 the data from a local source (you'll need to configure a Laravel filesystem 'disk' to make this work).
 
-__tlds.source.url__ - if source.type is set to 'url', enter the URL to retrieve the data from. By default this is set to the
+__tlds.url__ - if source is set to 'url', enter the URL to retrieve the data from. By default this is set to the
 IANA source file
 
-__tlds.source.disk__ - if source.type is set to 'filesystem', enter the name of the Laravel filesystem disk you have
+__tlds.disk__ - if source is set to 'filesystem', enter the name of the Laravel filesystem disk you have
 configured in the 'filesystems.disks' configuration option
 
-__tlds.source.path__ - if source.type is set to 'filesystem', enter the path to the data file relative to the root path
+__tlds.path__ - if source is set to 'filesystem', enter the path to the data file relative to the root path
 configured for the disk in the 'fileystems.disks' configuration option (eg. 'tlds/tlds-alpha-by-domain.txt')
 
 Usage
@@ -98,7 +103,7 @@ The simplest way to call the package is using the Facade:
     $tld_array = Tlds::fresh();
 
     // or if you prefer to not use Facades:
-    $tld_array = $app->make('tlds')->fresh();
+    $tld_array = $app->make(Hampel\Tlds\Tlds::class)->fresh();
 
 This returns a "fresh" copy of the data (bypassing the cache) as an array of TLDs.
 
@@ -109,13 +114,13 @@ To fetch the TLD array from the cache or have it update automatically if the cac
     $tld_array = Tlds::get();
 
     // if you prefer to manage the cache yourself, you can do this all manually, for example:
-    if (Cache::has(Config::get('tlds::cache.key'))
+    if (Cache::has(Config::get('tlds.cache.key'))
     {
-    	$tld_array = Cache::get(Config::get('tlds::cache.key'));
+    	$tld_array = Cache::get(Config::get('tlds.cache.key'));
     }
     else
     {
-    	Cache::put(Config::get('tlds::cache.key'), Tlds::fresh(), Config::get('tlds::cache.expiry'));
+    	Cache::put(Config::get('tlds.cache.key'), Tlds::fresh(), Config::get('tlds.cache.expiry'));
     }
 
 To run the artisan console command to update the cache:

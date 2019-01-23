@@ -1,6 +1,17 @@
 CHANGELOG
 =========
 
+1.5.0 (2019-01-23)
+------------------
+
+* updates to support Laravel 5.7
+* support for PHPUnit v7
+* refactored service provider to make more use of automatic dependency injection
+* removed string based container identifiers in favour of class based
+* refactored Tlds class to split fetcher into separate classes
+* rewrote tests for PHPUnit v7
+* changed some config options to remove unnecessary nested arrays to make overriding them easier
+
 1.4.0 (2018-08-25)
 ------------------
 
