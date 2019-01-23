@@ -1,55 +1,30 @@
 <?php  namespace Hampel\Tlds;
 
 use Psr\Log\LoggerInterface;
-
-use GuzzleHttp\ClientInterface;
-use GuzzleHttp\Exception\RequestException;
-
-use Illuminate\Contracts\Filesystem\Filesystem;
+use Hampel\Tlds\Fetcher\TldFetcher;
 use Illuminate\Contracts\Cache\Repository as Cache;
 use Illuminate\Contracts\Config\Repository as Config;
-use Illuminate\Contracts\Filesystem\FileNotFoundException;
-
-use Hampel\Tlds\Exceptions\HttpException;
-use Hampel\Tlds\Exceptions\FilesystemException;
-use Hampel\Tlds\Exceptions\BadResponseException;
-use Hampel\Tlds\Exceptions\ServiceProviderException;
 
 class Tlds 
 {
-	/**
-	 * @var \Illuminate\Contracts\Config\Repository
-	 */
-	private $config;
+	/** @var Config */
+	protected $config;
 
-	/**
-	 * @var \Illuminate\Contracts\Cache\Repository
-	 */
-	private $cache;
+	/** @var Cache */
+	protected $cache;
 
-	/**
-	 * @var \Psr\Log\LoggerInterface
-	 */
-	private $logger;
+	/** @var LoggerInterface */
+	protected $logger;
 
-	/**
-	 * @var \Illuminate\Contracts\Filesystem\Filesystem
-	 */
-	private $filesystem;
+	/** @var TldFetcher */
+	protected $fetcher;
 
-	/**
-	 * @var \GuzzleHttp\ClientInterface
-	 */
-	private $guzzle;
-
-	public function __construct(Config $config, Cache $cache, LoggerInterface $logger, Filesystem $filesystem = null, ClientInterface $guzzle = null)
+	public function __construct(Config $config, Cache $cache, LoggerInterface $logger, TldFetcher $fetcher)
 	{
-
 		$this->config = $config;
 		$this->cache = $cache;
 		$this->logger = $logger;
-		$this->filesystem = $filesystem;
-		$this->guzzle = $guzzle;
+		$this->fetcher = $fetcher;
 	}
 
 	public function get()
@@ -95,62 +70,7 @@ class Tlds
 	 */
 	protected function fetchTlds()
 	{
-		$type = $this->config->get('tlds.source.type');
-
-		if ($type == 'url')
-		{
-			return $this->fetchTldsFromUrl();
-		}
-		else
-		{
-			return $this->fetchTldsFromFilesystem();
-		}
-	}
-
-	protected function fetchTldsFromUrl()
-	{
-		$url = $this->config->get('tlds.source.url');
-
-		$this->logger->info("Fetching updated TLDs from URL: {$url}");
-
-		if (!isset($this->guzzle)) throw new ServiceProviderException("Guzzle client not initialised");
-
-		try
-		{
-			$response = $this->guzzle->request('GET', $url);
-		}
-		catch (RequestException $e)
-		{
-			throw new HttpException($e->getMessage(), $e->getCode(), $e);
-		}
-
-		$data = strval($response->getBody());
-
-		if (empty($data)) throw new BadResponseException("No data returned when fetching TLDs from URL {$url}");
-
-		return $data;
-	}
-
-	protected function fetchTldsFromFilesystem()
-	{
-		$path = $this->config->get('tlds.source.path');
-
-		$this->logger->info("Fetching updated TLDs from Filesystem: {$path}");
-
-		if (!isset($this->filesystem)) throw new ServiceProviderException("Filesystem not initialised");
-
-		try
-		{
-			$data = $this->filesystem->get($path);
-		}
-		catch (FileNotFoundException $e)
-		{
-			throw new FilesystemException($e->getMessage(), $e->getCode(), $e);
-		}
-
-		if (empty($data)) throw new BadResponseException("No data returned when fetching TLDs from Filesystem {$path}");
-
-		return $data;
+		return $this->fetcher->fetchTlds();
 	}
 
 	public function forget()

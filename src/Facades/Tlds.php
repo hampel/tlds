@@ -3,10 +3,11 @@
  * 
  */
 
+use Hampel\Tlds\Tlds as TldClass;
 use Illuminate\Support\Facades\Facade;
 
 class Tlds extends Facade {
 
-    protected static function getFacadeAccessor() { return 'tlds'; }
+    protected static function getFacadeAccessor() { return TldClass::class; }
 
 }

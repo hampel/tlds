@@ -12,65 +12,63 @@
 
 return [
 
-	'source' => [
-		/*
-		|--------------------------------------------------------------------------
-		| TLD Source Type
-		|--------------------------------------------------------------------------
-		|
-		| Specify the type of source we will use to retrieve the latest TLD list
-		|
-		| Supported: "url", "filesystem"
-		|
-		| Default: 'url'
-		|
-		*/
+   /*
+	|--------------------------------------------------------------------------
+	| TLD Source
+	|--------------------------------------------------------------------------
+	|
+	| Specify the source of the data to retrieve the latest TLD list from
+	|
+	| Supported: "url", "filesystem"
+	|
+	| Default: 'url'
+	|
+	*/
 
-		'type' => 'url',
+	'source' => 'url',
 
-		/*
-		|--------------------------------------------------------------------------
-		| Source URL
-		|--------------------------------------------------------------------------
-		|
-		| If 'type' is set to 'url', set this to the URL to retrieve the source data
-		| from.
-		|
-		| Default: 'http://data.iana.org/TLD/tlds-alpha-by-domain.txt'
-		|
-		*/
+   /*
+	|--------------------------------------------------------------------------
+	| Source URL
+	|--------------------------------------------------------------------------
+	|
+	| If 'type' is set to 'url', set this to the URL to retrieve the source data
+	| from.
+	|
+	| Default: 'http://data.iana.org/TLD/tlds-alpha-by-domain.txt'
+	|
+	*/
 
-		'url' => 'http://data.iana.org/TLD/tlds-alpha-by-domain.txt',
+	'url' => 'http://data.iana.org/TLD/tlds-alpha-by-domain.txt',
 
-		/*
-		|--------------------------------------------------------------------------
-		| Source Disk
-		|--------------------------------------------------------------------------
-		|
-		| If 'type' is set to 'filesystem', set this to the name of the Laravel
-		| filesystem (using Flysystem) which has been configured as the location
-		| the source data is stored in
-		|
-		| Default: 'default'
-		|
-		*/
+	/*
+	|--------------------------------------------------------------------------
+	| Source Disk
+	|--------------------------------------------------------------------------
+	|
+	| If 'type' is set to 'filesystem', set this to the name of the Laravel
+	| filesystem (using Flysystem) which has been configured as the location
+	| the source data is stored in
+	|
+	| Default: 'default'
+	|
+	*/
 
-		'disk' => 'default',
+	'disk' => 'default',
 
-		/*
-		|--------------------------------------------------------------------------
-		| Source Disk
-		|--------------------------------------------------------------------------
-		|
-		| If 'type' is set to 'filesystem', set this to the path of the source data
-		| file on the filesystem specified by the disk parameter
-		|
-		| Default: ''
-		|
-		*/
+	/*
+	|--------------------------------------------------------------------------
+	| Source Disk
+	|--------------------------------------------------------------------------
+	|
+	| If 'type' is set to 'filesystem', set this to the path of the source data
+	| file on the filesystem specified by the disk parameter
+	|
+	| Default: ''
+	|
+	*/
 
-		'path' => '',
-	],
+	'path' => '',
 
 	'cache' => [
 

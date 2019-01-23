@@ -1,17 +1,22 @@
 <?php namespace Hampel\Tlds;
 
 use Mockery;
+use Psr\Log\LoggerInterface;
+use PHPUnit\Framework\TestCase;
+use Hampel\Tlds\Fetcher\TldFetcher;
+use Illuminate\Contracts\Cache\Repository as Cache;
+use Illuminate\Contracts\Config\Repository as Config;
 
-class TldsCacheTest extends \PHPUnit_Framework_TestCase
+class TldsCacheTest extends TestCase
 {
 	use \Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 
 	public function setUp()
 	{
-		$this->config = Mockery::mock(\Illuminate\Contracts\Config\Repository::class);
-		$this->cache = Mockery::mock(\Illuminate\Contracts\Cache\Repository::class);
-		$this->log = Mockery::mock(\Psr\Log\LoggerInterface::class);
-		$this->filesystem = Mockery::mock(\Illuminate\Contracts\Filesystem\Filesystem::class);
+		$this->config = Mockery::mock(Config::class);
+		$this->cache = Mockery::mock(Cache::class);
+		$this->log = Mockery::mock(LoggerInterface::class);
+		$this->fetcher = Mockery::mock(TldFetcher::class);
 	}
 
 	public function testCache()
@@ -20,12 +25,12 @@ class TldsCacheTest extends \PHPUnit_Framework_TestCase
 		$this->config->shouldReceive('get')->once()->with('tlds.cache.expiry')->andReturn(1440);
 		$this->cache->shouldReceive('remember')->once()->with('tlds', 1440, Mockery::on(function($closure)
 		{
-			$this->config->shouldReceive('get')->once()->with('tlds.source.type')->andReturn('filesystem');
-			$this->config->shouldReceive('get')->once()->with('tlds.source.path')->andReturn('tlds.txt');
-			$this->log->shouldReceive('info')->once()->with('Fetching updated TLDs from Filesystem: tlds.txt');
-			$this->filesystem->shouldReceive('get')->once()->with('tlds.txt')->andReturn(file_get_contents(
-																						 __DIR__ . '/mock/tlds-alpha-by-domain.txt'
-																						 ));
+//			$this->config->shouldReceive('get')->once()->with('tlds.source')->andReturn('filesystem');
+//			$this->config->shouldReceive('get')->once()->with('tlds.path')->andReturn('tlds.txt');
+//			$this->log->shouldReceive('info')->once()->with('Fetching updated TLDs from Filesystem: tlds.txt');
+			$this->fetcher->shouldReceive('fetchTlds')->once()->andReturn(file_get_contents(
+				__DIR__ . '/mock/tlds-alpha-by-domain.txt'
+			));
 			$this->log->shouldReceive('info')->once()->with('Added 725 TLDs to cache');
 
 			$tlds = $closure();
@@ -39,12 +44,8 @@ class TldsCacheTest extends \PHPUnit_Framework_TestCase
 			return true;
 		}))->andReturn('foo');
 
-		$tlds = (new Tlds($this->config, $this->cache, $this->log, $this->filesystem, null))->get();
+		$tlds = (new Tlds($this->config, $this->cache, $this->log, $this->fetcher))->get();
 
 		$this->assertEquals('foo', $tlds);
-	}
-
-	public function tearDown() {
-		Mockery::close();
 	}
 }
