@@ -77,12 +77,12 @@ return [
 		| Cache Expiry
 		|--------------------------------------------------------------------------
 		|
-		| How long should the application cache TLD data - in minutes
-		| Default: 1440 minutes = 1 day
+		| How long should the application cache TLD data - in seconds
+		| Default: 86400 seconds = 1 day
 		|
 		*/
 
-		'expiry' => 1440,
+		'expiry' => 86400,
 
 		/*
 		|--------------------------------------------------------------------------
