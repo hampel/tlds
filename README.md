@@ -60,14 +60,28 @@ If you want to change the default Tlds configuration, first publish it using the
 
 The config files can then be found in `config/tlds.php`.
 
+Upgrading
+---------
+
+__Upgrading to v1.5__
+
+Note that some config options have changed - if you have published the config file, please compare with the version
+supplied with the package and adjust the published file as necessary.
+
+__Upgrading to v1.6__
+
+In line with changes made in Laravel v5.8, cache expiry times are now specified in seconds rather than minutes. Be sure
+to adjust the value of `tlds.cache.expiry` to suit.
+
 Configuration
 -------------
 
-__Notes__ some config options have changed in v1.5
+__Notes__ some config options have changed in v1.5; in v1.6 ` is now specified in seconds rather than
+minutes
 
 Refer to the configuration file  for more details about configuration options.
 
-__tlds.cache.expiry__ - sets the cache expiry time
+__tlds.cache.expiry__ - sets the cache expiry time in seconds
 
 __tlds.cache.key__ - sets the key used to store the TLD data in the cache
 
