@@ -1,11 +1,21 @@
 CHANGELOG
 =========
 
+1.6.1 (2019-03-27)
+------------------
+
+* restrict framework version to 5.8 because of cache config changes
+
 1.6.0 (2019-03-27)
 ------------------
 
 * updates to support Laravel 5.8
 * cache expiry config values are now specified in seconds rather than minutes, in line with changes to Laravel 5.8
+
+1.5.1 (2019-03-27)
+------------------
+
+* explictly support up to Laravel v5.7
 
 1.5.0 (2019-01-23)
 ------------------
