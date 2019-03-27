@@ -76,9 +76,6 @@ to adjust the value of `tlds.cache.expiry` to suit.
 Configuration
 -------------
 
-__Notes__ some config options have changed in v1.5; in v1.6 ` is now specified in seconds rather than
-minutes
-
 Refer to the configuration file  for more details about configuration options.
 
 __tlds.cache.expiry__ - sets the cache expiry time in seconds
