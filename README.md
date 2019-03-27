@@ -60,10 +60,16 @@ If you want to change the default Tlds configuration, first publish it using the
 
 The config files can then be found in `config/tlds.php`.
 
+Upgrading
+---------
+
+__Upgrading to v1.5__
+
+Note that some config options have changed - if you have published the config file, please compare with the version
+supplied with the package and adjust the published file as necessary.
+
 Configuration
 -------------
-
-__Notes__ some config options have changed in v1.5
 
 Refer to the configuration file  for more details about configuration options.
 
