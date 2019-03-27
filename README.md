@@ -68,7 +68,7 @@ __Upgrading to v1.5__
 Note that some config options have changed - if you have published the config file, please compare with the version
 supplied with the package and adjust the published file as necessary.
 
-__Upgrading to v1.6__
+__Upgrading to v1.6 (Laravel v5.8)__
 
 In line with changes made in Laravel v5.8, cache expiry times are now specified in seconds rather than minutes. Be sure
 to adjust the value of `tlds.cache.expiry` to suit.
