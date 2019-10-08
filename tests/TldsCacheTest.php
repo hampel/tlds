@@ -11,7 +11,7 @@ class TldsCacheTest extends TestCase
 {
 	use \Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 
-	public function setUp()
+	public function setUp() : void
 	{
 		$this->config = Mockery::mock(Config::class);
 		$this->cache = Mockery::mock(Cache::class);

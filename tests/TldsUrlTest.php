@@ -18,7 +18,7 @@ class TldsUrlTest extends TestCase
 {
 	use \Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 
-	public function setUp()
+	public function setUp() : void
 	{
 		$this->mock = new MockHandler();
 
