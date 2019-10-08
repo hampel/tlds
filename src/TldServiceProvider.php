@@ -1,5 +1,6 @@
 <?php namespace Hampel\Tlds;
 
+use Str;
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
 use Hampel\Tlds\Fetcher\TldFetcher;
@@ -85,7 +86,7 @@ class TldServiceProvider extends ServiceProvider
 
 	protected function extendValidator($rule)
 	{
-		$method = 'validate' . studly_case($rule);
+		$method = 'validate' . Str::studly($rule);
 		$translation = $this->app['translator']->get('tlds::validation');
 
 		$this->app['validator']->extend($rule, ValidatorExtensions::class . "@{$method}", $translation[$rule]);
@@ -101,7 +102,7 @@ class TldServiceProvider extends ServiceProvider
 
 	protected function addReplacer($rule)
 	{
-		$method = 'replace' . studly_case($rule);
+		$method = 'replace' . Str::studly($rule);
 
 		$this->app['validator']->replacer($rule, ValidatorExtensions::class . "@{$method}");
 	}

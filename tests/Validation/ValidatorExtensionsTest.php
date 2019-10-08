@@ -61,10 +61,10 @@ class ValidatorExtensionsTest extends TestCase
 			$this->assertEquals('net', $data[1]);
 			return true;
 		}))->andReturn(false);
-		$translator->shouldReceive('trans')->once()->with('validation.custom')->andReturn('validation.custom');
-		$translator->shouldReceive('trans')->once()->with('validation.custom.foo.domain')->andReturn('validation.custom.foo.domain');
-		$translator->shouldReceive('trans')->once()->with('validation.domain')->andReturn('validation.domain');
-		$translator->shouldReceive('trans')->once()->with('validation.attributes')->andReturn('validation.attributes');
+		$translator->shouldReceive('get')->once()->with('validation.custom')->andReturn('validation.custom');
+		$translator->shouldReceive('get')->once()->with('validation.custom.foo.domain')->andReturn('validation.custom.foo.domain');
+		$translator->shouldReceive('get')->once()->with('validation.domain')->andReturn('validation.domain');
+		$translator->shouldReceive('get')->once()->with('validation.attributes')->andReturn('validation.attributes');
 
 		$factory = new Factory($translator, $container);
 		$factory->extend('domain', ValidatorExtensions::class . '@validateDomain', ':attribute must be a valid domain name');
@@ -121,10 +121,10 @@ class ValidatorExtensionsTest extends TestCase
 			$this->assertEquals('net', $data[1]);
 			return true;
 		}))->andReturn(false);
-		$translator->shouldReceive('trans')->once()->with('validation.custom')->andReturn('validation.custom');
-		$translator->shouldReceive('trans')->once()->with('validation.custom.foo.domain_in')->andReturn('validation.custom.foo.domain_in');
-		$translator->shouldReceive('trans')->once()->with('validation.domain_in')->andReturn('validation.domain_in');
-		$translator->shouldReceive('trans')->once()->with('validation.attributes')->andReturn('validation.attributes');
+		$translator->shouldReceive('get')->once()->with('validation.custom')->andReturn('validation.custom');
+		$translator->shouldReceive('get')->once()->with('validation.custom.foo.domain_in')->andReturn('validation.custom.foo.domain_in');
+		$translator->shouldReceive('get')->once()->with('validation.domain_in')->andReturn('validation.domain_in');
+		$translator->shouldReceive('get')->once()->with('validation.attributes')->andReturn('validation.attributes');
 		$container->shouldReceive('make')->once()->with(ValidatorExtensions::class)->andReturn($extensions);
 
 		$factory = new Factory($translator, $container);
