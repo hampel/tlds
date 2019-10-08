@@ -4,7 +4,7 @@ Top Level Domain Fetcher for Laravel
 This package provides a mechanism for retrieving a list of the current Top Level Domains (TLDs) managed by IANA.
 It also provides several extensions to the Laravel validation service to validate domain names and TLDs.
 
-By [Simon Hampel](mailto:simon@hampelgroup.com).
+By [Simon Hampel](https://twitter.com/SimonHampel).
 
 Installation
 ------------
@@ -19,7 +19,7 @@ Or manually define it in your `composer.json`
     :::json
     {
         "require": {
-            "hampel/tlds": "~1.5"
+            "hampel/tlds": "~1.7"
         }
     }
 
