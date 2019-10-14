@@ -1,12 +1,12 @@
 <?php namespace Hampel\Tlds;
 
-use Str;
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
 use Hampel\Tlds\Fetcher\TldFetcher;
 use Hampel\Tlds\Console\UpdateTlds;
 use Hampel\Tlds\Fetcher\UrlTldFetcher;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Str;
 use Hampel\Tlds\Fetcher\FilesystemTldFetcher;
 use Hampel\Tlds\Validation\ValidatorExtensions;
 
