@@ -19,7 +19,7 @@ Or manually define it in your `composer.json`
     :::json
     {
         "require": {
-            "hampel/tlds": "~1.7"
+            "hampel/tlds": "^1.6"
         }
     }
 
