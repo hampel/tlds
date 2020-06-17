@@ -65,6 +65,7 @@ class ValidatorExtensionsTest extends TestCase
 		$translator->shouldReceive('get')->once()->with('validation.custom.foo.domain')->andReturn('validation.custom.foo.domain');
 		$translator->shouldReceive('get')->once()->with('validation.domain')->andReturn('validation.domain');
 		$translator->shouldReceive('get')->once()->with('validation.attributes')->andReturn('validation.attributes');
+		$translator->shouldReceive('get')->once()->with('validation.values.foo.example.invalid-tld')->andReturn('validation.values.foo.example.invalid-tld');
 
 		$factory = new Factory($translator, $container);
 		$factory->extend('domain', ValidatorExtensions::class . '@validateDomain', ':attribute must be a valid domain name');
@@ -125,6 +126,7 @@ class ValidatorExtensionsTest extends TestCase
 		$translator->shouldReceive('get')->once()->with('validation.custom.foo.domain_in')->andReturn('validation.custom.foo.domain_in');
 		$translator->shouldReceive('get')->once()->with('validation.domain_in')->andReturn('validation.domain_in');
 		$translator->shouldReceive('get')->once()->with('validation.attributes')->andReturn('validation.attributes');
+		$translator->shouldReceive('get')->once()->with('validation.values.foo.example.invalid-tld')->andReturn('validation.values.foo.example.invalid-tld');
 		$container->shouldReceive('make')->once()->with(ValidatorExtensions::class)->andReturn($extensions);
 
 		$factory = new Factory($translator, $container);
