@@ -1,6 +1,11 @@
 Top Level Domain Fetcher for Laravel
 ====================================
 
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/hampel/tlds.svg?style=flat-square)](https://packagist.org/packages/hampel/tlds)
+[![Total Downloads](https://img.shields.io/packagist/dt/hampel/tlds.svg?style=flat-square)](https://packagist.org/packages/hampel/tlds)
+[![Open Issues](https://img.shields.io/bitbucket/issues/hampel/tlds.svg?style=flat-square)](https://bitbucket.org/hampel/tlds/issues)
+[![License](https://img.shields.io/packagist/l/hampel/tlds.svg?style=flat-square)](https://packagist.org/packages/hampel/tlds)
+
 This package provides a mechanism for retrieving a list of the current Top Level Domains (TLDs) managed by IANA.
 It also provides several extensions to the Laravel validation service to validate domain names and TLDs.
 
