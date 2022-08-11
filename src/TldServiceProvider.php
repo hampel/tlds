@@ -55,13 +55,15 @@ class TldServiceProvider extends ServiceProvider
 		$this->publishes([
             __DIR__ . '/../config/tlds.php' => config_path('tlds.php'),
 		], 'config');
-
-
 	}
 
 	protected function defineTranslations()
 	{
-		$this->loadTranslationsFrom(__DIR__ . '/lang', 'tlds');
+		$this->loadTranslationsFrom(__DIR__ . '/../lang', 'tlds');
+
+        $this->publishes([
+            __DIR__ . '/../lang' => $this->app->langPath('vendor/tlds'),
+        ], 'lang');
 	}
 
 	protected function registerTlds()
