@@ -1,6 +1,12 @@
 CHANGELOG
 =========
 
+1.9.1 (2022-08-11)
+------------------
+
+* change tests to use PHPUnit expectExceptionMessage
+* change from Guzzle 6.5 => 7.x functions in unit tests: GuzzleHttp\Psr7\parse_response => GuzzleHttp\Psr7\Message::parseResponse
+
 1.9.0 (2020-09-17)
 ------------------
 
