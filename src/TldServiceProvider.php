@@ -26,7 +26,12 @@ class TldServiceProvider extends ServiceProvider
 	 *
 	 * @return void
 	 */
-	public function register(){}
+	public function register()
+    {
+        $this->mergeConfigFrom(
+            __DIR__ . '/../config/tlds.php', 'tlds'
+        );
+    }
 
 	/**
 	 * Bootstrap the application events.
@@ -48,12 +53,10 @@ class TldServiceProvider extends ServiceProvider
 	protected function defineConfiguration()
 	{
 		$this->publishes([
-			__DIR__ . '/config/tlds.php' => config_path('tlds.php'),
+            __DIR__ . '/../config/tlds.php' => config_path('tlds.php'),
 		], 'config');
 
-		$this->mergeConfigFrom(
-			__DIR__ . '/config/tlds.php', 'tlds'
-		);
+
 	}
 
 	protected function defineTranslations()
