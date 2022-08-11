@@ -1,18 +1,19 @@
 <?php namespace Hampel\Tlds;
 
-use Mockery;
 use GuzzleHttp\Client;
-use GuzzleHttp\Psr7\Request;
-use Psr\Log\LoggerInterface;
-use GuzzleHttp\Psr7\Response;
-use PHPUnit\Framework\TestCase;
-use GuzzleHttp\Handler\MockHandler;
-use Hampel\Tlds\Fetcher\UrlTldFetcher;
-use Hampel\Tlds\Exceptions\HttpException;
 use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Handler\MockHandler;
+use GuzzleHttp\Psr7\Message;
+use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7\Response;
 use Hampel\Tlds\Exceptions\BadResponseException;
+use Hampel\Tlds\Exceptions\HttpException;
+use Hampel\Tlds\Fetcher\UrlTldFetcher;
 use Illuminate\Contracts\Cache\Repository as Cache;
 use Illuminate\Contracts\Config\Repository as Config;
+use Mockery;
+use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
 
 class TldsUrlTest extends TestCase
 {
@@ -27,7 +28,7 @@ class TldsUrlTest extends TestCase
 
 	protected function loadMockResponse($filename)
 	{
-		return \GuzzleHttp\Psr7\parse_response($this->loadMockData($filename));
+		return Message::parseResponse($this->loadMockData($filename));
 	}
 
 	protected function loadMockData($filename)
@@ -50,7 +51,8 @@ class TldsUrlTest extends TestCase
 		$config->shouldReceive('get')->once()->with('tlds.url')->andReturn('http://foo.example.com/bar.txt');
 		$log->shouldReceive('info')->once()->with('Fetching updated TLDs from URL: http://foo.example.com/bar.txt');
 
-		$this->expectException(HttpException::class, 'foo');
+		$this->expectException(HttpException::class);
+		$this->expectExceptionMessage('foo');
 
 		$fetcher = new UrlTldFetcher($this->client, $config, $log);
 
@@ -68,7 +70,8 @@ class TldsUrlTest extends TestCase
 		$config->shouldReceive('get')->once()->with('tlds.url')->andReturn('http://foo.example.com/bar.txt');
 		$log->shouldReceive('info')->once()->with('Fetching updated TLDs from URL: http://foo.example.com/bar.txt');
 
-		$this->expectException(BadResponseException::class, 'No data returned when fetching TLDs from URL http://foo.example.com/bar.txt');
+		$this->expectException(BadResponseException::class);
+		$this->expectExceptionMessage('No data returned when fetching TLDs from URL http://foo.example.com/bar.txt');
 
 		$fetcher = new UrlTldFetcher($this->client, $config, $log);
 
@@ -86,7 +89,8 @@ class TldsUrlTest extends TestCase
 		$config->shouldReceive('get')->once()->with('tlds.url')->andReturn('http://foo.example.com/bar.txt');
 		$log->shouldReceive('info')->once()->with('Fetching updated TLDs from URL: http://foo.example.com/bar.txt');
 
-		$this->expectException(BadResponseException::class, 'No data returned when fetching TLDs from URL http://foo.example.com/bar.txt');
+		$this->expectException(BadResponseException::class);
+		$this->expectExceptionMessage('No data returned when fetching TLDs from URL http://foo.example.com/bar.txt');
 
 		$fetcher = new UrlTldFetcher($this->client, $config, $log);
 
