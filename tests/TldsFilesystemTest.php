@@ -26,11 +26,12 @@ class TldsFilesystemTest extends TestCase
 		$log->shouldReceive('info')->once()->with('Fetching updated TLDs from Filesystem: tlds.txt');
 		$filesystem->shouldReceive('get')->once()->with('tlds.txt')->andThrow(FileNotFoundException::class, 'foo');
 
-		$this->expectException(FilesystemException::class, 'foo');
+		$this->expectException(FilesystemException::class);
+		$this->expectExceptionMessage('foo');
 
 		$fetcher = new FilesystemTldFetcher($filesystem, $config, $log);
 
-		$tlds = (new Tlds($config, $cache, $log, $fetcher))->fresh();
+		(new Tlds($config, $cache, $log, $fetcher))->fresh();
 	}
 
 	public function testRefreshFilesystemEmptyResponse()
@@ -44,11 +45,12 @@ class TldsFilesystemTest extends TestCase
 		$log->shouldReceive('info')->once()->with('Fetching updated TLDs from Filesystem: tlds.txt');
 		$filesystem->shouldReceive('get')->once()->with('tlds.txt')->andReturn('');
 
-		$this->expectException(BadResponseException::class, 'No data returned when fetching TLDs from Filesystem tlds.txt');
+		$this->expectException(BadResponseException::class);
+		$this->expectExceptionMessage('No data returned when fetching TLDs from Filesystem tlds.txt');
 
 		$fetcher = new FilesystemTldFetcher($filesystem, $config, $log);
 
-		$tlds = (new Tlds($config, $cache, $log, $fetcher))->fresh();
+		(new Tlds($config, $cache, $log, $fetcher))->fresh();
 	}
 
 	public function testRefreshFilesystemBadTlds()
