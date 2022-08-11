@@ -1,6 +1,12 @@
 CHANGELOG
 =========
 
+1.10.1 (2022-08-11)
+------------------
+
+* move config out of src directory; mergeConfigFrom should be in register method
+* move lang out of src directory; publish language files
+
 1.10.0 (2022-08-11)
 ------------------
 
