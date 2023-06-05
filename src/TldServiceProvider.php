@@ -5,6 +5,7 @@ use GuzzleHttp\ClientInterface;
 use Hampel\Tlds\Fetcher\TldFetcher;
 use Hampel\Tlds\Console\UpdateTlds;
 use Hampel\Tlds\Fetcher\UrlTldFetcher;
+use Illuminate\Foundation\Console\AboutCommand;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Hampel\Tlds\Fetcher\FilesystemTldFetcher;
@@ -47,8 +48,8 @@ class TldServiceProvider extends ServiceProvider
 		$this->addNewRules();
 		$this->addNewReplacers();
 
-		$this->registerCommands();
-	}
+        $this->registerCommands();
+    }
 
     /**
      * @return void
@@ -133,7 +134,6 @@ class TldServiceProvider extends ServiceProvider
 		$this->app['validator']->replacer($rule, ValidatorExtensions::class . "@{$method}");
 	}
 
-
     /**
      * @return void
      */
@@ -141,9 +141,23 @@ class TldServiceProvider extends ServiceProvider
 	{
 		if ($this->app->runningInConsole())
 		{
+            $this->addAboutOutput();
+
 			$this->commands([
 				UpdateTlds::class,
 			]);
 		}
 	}
+
+    /**
+     * @return void
+     */
+    protected function addAboutOutput(): void
+    {
+        // About command was added in Laravel 9.21.0, so only invoke it if we're running a later version
+        if (version_compare($this->app->version(), '9.21.0', '>='))
+        {
+            AboutCommand::add('TLDs', fn() => ['Source' => $this->app['config']->get('tlds.source')]);
+        }
+    }
 }
