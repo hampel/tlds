@@ -26,7 +26,7 @@ class TldServiceProvider extends ServiceProvider
 	 *
 	 * @return void
 	 */
-	public function register()
+	public function register(): void
     {
         $this->mergeConfigFrom(
             __DIR__ . '/../config/tlds.php', 'tlds'
@@ -38,7 +38,7 @@ class TldServiceProvider extends ServiceProvider
 	 *
 	 * @return void
 	 */
-	public function boot()
+	public function boot(): void
 	{
 		$this->defineConfiguration();
 		$this->defineTranslations();
@@ -50,14 +50,20 @@ class TldServiceProvider extends ServiceProvider
 		$this->registerCommands();
 	}
 
-	protected function defineConfiguration()
+    /**
+     * @return void
+     */
+	protected function defineConfiguration(): void
 	{
 		$this->publishes([
             __DIR__ . '/../config/tlds.php' => config_path('tlds.php'),
 		], 'config');
 	}
 
-	protected function defineTranslations()
+    /**
+     * @return void
+     */
+	protected function defineTranslations(): void
 	{
 		$this->loadTranslationsFrom(__DIR__ . '/../lang', 'tlds');
 
@@ -66,7 +72,10 @@ class TldServiceProvider extends ServiceProvider
         ], 'lang');
 	}
 
-	protected function registerTlds()
+    /**
+     * @return void
+     */
+	protected function registerTlds(): void
 	{
 		$type = $this->app['config']->get('tlds.source');
 
@@ -81,7 +90,10 @@ class TldServiceProvider extends ServiceProvider
 		});
 	}
 
-	protected function addNewRules()
+    /**
+     * @return void
+     */
+	protected function addNewRules(): void
 	{
 		foreach ($this->rules as $rule)
 		{
@@ -89,7 +101,10 @@ class TldServiceProvider extends ServiceProvider
 		}
 	}
 
-	protected function extendValidator($rule)
+    /**
+     * @return void
+     */
+	protected function extendValidator($rule): void
 	{
 		$method = 'validate' . Str::studly($rule);
 		$translation = $this->app['translator']->get('tlds::validation');
@@ -97,7 +112,10 @@ class TldServiceProvider extends ServiceProvider
 		$this->app['validator']->extend($rule, ValidatorExtensions::class . "@{$method}", $translation[$rule]);
 	}
 
-	protected function addNewReplacers()
+    /**
+     * @return void
+     */
+	protected function addNewReplacers(): void
 	{
 		foreach ($this->replacers as $rule)
 		{
@@ -105,14 +123,21 @@ class TldServiceProvider extends ServiceProvider
 		}
 	}
 
-	protected function addReplacer($rule)
+    /**
+     * @return void
+     */
+	protected function addReplacer($rule): void
 	{
 		$method = 'replace' . Str::studly($rule);
 
 		$this->app['validator']->replacer($rule, ValidatorExtensions::class . "@{$method}");
 	}
 
-	protected function registerCommands()
+
+    /**
+     * @return void
+     */
+    protected function registerCommands(): void
 	{
 		if ($this->app->runningInConsole())
 		{
