@@ -32,7 +32,7 @@ return [
 	| Source URL
 	|--------------------------------------------------------------------------
 	|
-	| If 'type' is set to 'url', set this to the URL to retrieve the source data
+	| If 'source' is set to 'url', set this to the URL to retrieve the source data
 	| from.
 	|
 	| Default: 'http://data.iana.org/TLD/tlds-alpha-by-domain.txt'
@@ -46,7 +46,7 @@ return [
 	| Source Disk
 	|--------------------------------------------------------------------------
 	|
-	| If 'type' is set to 'filesystem', set this to the name of the Laravel
+	| If 'source' is set to 'filesystem', set this to the name of the Laravel
 	| filesystem (using Flysystem) which has been configured as the location
 	| the source data is stored in
 	|
