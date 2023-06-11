@@ -14,69 +14,17 @@ By [Simon Hampel](mailto:simon@hampelgroup.com)
 Installation
 ------------
 
-The recommended way of installing the Tlds package is through [Composer](http://getcomposer.org):
+To install using composer, run the following command:
 
-	:::bash
-	composer require "hampel/tlds"
-
-Or manually define it in your `composer.json`
-
-    :::json
-    {
-        "require": {
-            "hampel/tlds": "^1.6"
-        }
-    }
-
-Then run Composer to update the new requirement.
-
-    :::bash
-    $ composer update
-
-This package implements Laravel package discovery, so you should not have to add the service providers or aliases to the
-application configuration. If you decide to disable package discovery - you must manually add the following: 
-
-Open your Laravel config file `config/app.php` and add the following service providers in the `$providers` array, if
-they don't already exist:
-
-    :::php
-    "providers" => [
-
-        ...
-
-    	Hampel\Tlds\TldServiceProvider::class,
-
-    ],
-
-You may also optionally add an alias entry to the `$aliases` array in the same file for the Tlds facade:
-
-    :::php
-    "aliases" => [
-
-    	...
-
-    	'Tlds'			  => Hampel\Tlds\Facades\Tlds::class,
-    ],
+`composer require hampel/tlds`
 
 If you want to change the default Tlds configuration, first publish it using the command:
 
-    :::bash
-    $ php artisan vendor:publish --provider="Hampel\Tlds\TldServiceProvider"
+```bash
+$ php artisan vendor:publish --provider="Hampel\Tlds\TldServiceProvider"
+```
 
 The config files can then be found in `config/tlds.php`.
-
-Upgrading
----------
-
-__Upgrading to v1.5__
-
-Note that some config options have changed - if you have published the config file, please compare with the version
-supplied with the package and adjust the published file as necessary.
-
-__Upgrading to v1.6 (Laravel v5.8)__
-
-In line with changes made in Laravel v5.8, cache expiry times are now specified in seconds rather than minutes. Be sure
-to adjust the value of `tlds.cache.expiry` to suit.
 
 Configuration
 -------------
