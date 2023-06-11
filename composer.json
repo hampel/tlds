@@ -1,7 +1,7 @@
 {
     "name": "hampel/tlds",
-    "description": "Fetches the latest list of Top Level Domains from IANA, plus Laravel validation service extensions for validating TLDs",
 	"homepage" : "https://bitbucket.org/hampel/tlds",
+    "description": "Fetches the latest list of Top Level Domains from IANA, plus Laravel classes for validating TLDs",
 	"authors": [{
 		"name": "Simon Hampel",
 		"email": "simon@hampelgroup.com"
