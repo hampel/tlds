@@ -1,14 +1,14 @@
 {
     "name": "hampel/tlds",
-	"homepage" : "https://bitbucket.org/hampel/tlds",
     "description": "Fetches the latest list of Top Level Domains from IANA, plus Laravel classes for validating TLDs",
+	"homepage" : "https://github.com/hampel/tlds",
 	"authors": [{
 		"name": "Simon Hampel",
 		"email": "simon@hampelgroup.com"
 	}],
 	"support": {
-		"issues": "https://bitbucket.org/hampel/tlds/issues",
-		"source": "https://bitbucket.org/hampel/tlds/src"
+		"issues": "https://github.com/hampel/tlds/issues",
+		"source": "https://github.com/hampel/tlds"
 	},
 	"keywords": [
 		"tld",
