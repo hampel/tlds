@@ -62,36 +62,39 @@ is ideal for automating the retrieval of data using a cron job or similar.
 
 The simplest way to call the package is using the Facade:
 
-    :::php
-    // get a "fresh" copy of the TLD list
-    $tld_array = Tlds::fresh();
+```php
+// get a "fresh" copy of the TLD list
+$tld_array = Tlds::fresh();
 
-    // or if you prefer to not use Facades:
-    $tld_array = $app->make(Hampel\Tlds\Tlds::class)->fresh();
+// or if you prefer to not use Facades:
+$tld_array = $app->make(Hampel\Tlds\Tlds::class)->fresh();
+```
 
 This returns a "fresh" copy of the data (bypassing the cache) as an array of TLDs.
 
 To fetch the TLD array from the cache or have it update automatically if the cached data has expired
 
-    :::php
-    // get the TLD list from the cache (or update the cache if it has expired)
-    $tld_array = Tlds::get();
+```php
+// get the TLD list from the cache (or update the cache if it has expired)
+$tld_array = Tlds::get();
 
-    // if you prefer to manage the cache yourself, you can do this all manually, for example:
-    if (Cache::has(Config::get('tlds.cache.key'))
-    {
-    	$tld_array = Cache::get(Config::get('tlds.cache.key'));
-    }
-    else
-    {
-    	Cache::put(Config::get('tlds.cache.key'), Tlds::fresh(), Config::get('tlds.cache.expiry'));
-    }
+// if you prefer to manage the cache yourself, you can do this all manually, for example:
+if (Cache::has(Config::get('tlds.cache.key'))
+{
+    $tld_array = Cache::get(Config::get('tlds.cache.key'));
+}
+else
+{
+    Cache::put(Config::get('tlds.cache.key'), Tlds::fresh(), Config::get('tlds.cache.expiry'));
+}
+```
 
 To run the artisan console command to update the cache:
 
-    :::bash
-    $ php artisan tld:update
-    Added 725 TLDs to the TLD Cache
+```bash
+$ php artisan tld:update
+Added 725 TLDs to the TLD Cache
+```
 
 Validators
 ----------
