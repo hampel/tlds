@@ -15,26 +15,23 @@
 		"domain",
 		"iana",
 		"domain name",
-		"laravel"
+		"laravel",
+        "top-level-domains",
+        "domain-names"
 	],
 	"license" : [
 		"MIT"
 	],
     "require": {
-		"illuminate/support": "^8.0|^9.0|^10.0",
-		"guzzlehttp/guzzle": "^6.0|^7.0",
+		"illuminate/support": "^10.0",
 		"hampel/validate": "~2.2",
-        "php": ">=5.5"
+        "php": ">=7.3"
     },
 	"require-dev": {
-		"illuminate/container": "^8.0|^9.0|^10.0",
-		"illuminate/validation": "^8.0|^9.0|^10.0"
+        "guzzlehttp/guzzle": "^7.0",
 		"phpunit/phpunit": "^10.0",
-		"mockery/mockery": "~1.0"
+        "orchestra/testbench": "^8.5"
 	},
-    "suggest": {
-		"hampel/validate-laravel": "Additional validation service rules"
-    },
 	"conflicts": {
 		"hampel/validate-laravel": "<2.0"
     },
@@ -45,7 +42,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Hampel\\Tlds\\": "tests/"
+            "Hampel\\Tlds\\Tests\\": "tests/"
         }
 	},
  	"minimum-stability": "dev",
@@ -59,5 +56,10 @@
 				"Tlds": "Hampel\\Tlds\\Facades\\Tlds"
 			}
 		}
-	}
+	},
+    "scripts": {
+        "post-autoload-dump": [
+            "@php vendor/bin/testbench package:discover --ansi"
+        ]
+    }
 }

@@ -1,27 +1,15 @@
 <?php namespace Hampel\Tlds;
 
-use GuzzleHttp\Client;
-use GuzzleHttp\ClientInterface;
 use Hampel\Tlds\Fetcher\TldFetcher;
 use Hampel\Tlds\Console\UpdateTlds;
 use Hampel\Tlds\Fetcher\UrlTldFetcher;
 use Illuminate\Foundation\Console\AboutCommand;
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Str;
 use Hampel\Tlds\Fetcher\FilesystemTldFetcher;
 use Hampel\Tlds\Validation\ValidatorExtensions;
 
 class TldServiceProvider extends ServiceProvider
 {
-
-	protected $rules = [
-		'domain', 'domain_in', 'tld', 'tld_in'
-	];
-
-	protected $replacers = [
-		'domain_in', 'tld_in'
-	];
-
 	/**
 	 * Register the service provider.
 	 *
@@ -43,11 +31,7 @@ class TldServiceProvider extends ServiceProvider
 	{
 		$this->defineConfiguration();
 		$this->defineTranslations();
-
 		$this->registerTlds();
-		$this->addNewRules();
-		$this->addNewReplacers();
-
         $this->registerCommands();
     }
 
@@ -84,54 +68,6 @@ class TldServiceProvider extends ServiceProvider
 			TldFetcher::class,
 			$type == 'filesystem' ? FilesystemTldFetcher::class : UrlTldFetcher::class
 		);
-
-		$this->app->bind(ClientInterface::class, function ()
-		{
-			return new Client();
-		});
-	}
-
-    /**
-     * @return void
-     */
-	protected function addNewRules(): void
-	{
-		foreach ($this->rules as $rule)
-		{
-			$this->extendValidator($rule);
-		}
-	}
-
-    /**
-     * @return void
-     */
-	protected function extendValidator($rule): void
-	{
-		$method = 'validate' . Str::studly($rule);
-		$translation = $this->app['translator']->get('tlds::validation');
-
-		$this->app['validator']->extend($rule, ValidatorExtensions::class . "@{$method}", $translation[$rule]);
-	}
-
-    /**
-     * @return void
-     */
-	protected function addNewReplacers(): void
-	{
-		foreach ($this->replacers as $rule)
-		{
-			$this->addReplacer($rule);
-		}
-	}
-
-    /**
-     * @return void
-     */
-	protected function addReplacer($rule): void
-	{
-		$method = 'replace' . Str::studly($rule);
-
-		$this->app['validator']->replacer($rule, ValidatorExtensions::class . "@{$method}");
 	}
 
     /**

@@ -1,6 +1,6 @@
 <?php namespace Hampel\Tlds\Exceptions;
 
-class HttpException extends FetchException
+class FetchException extends RuntimeException
 {
 
 }

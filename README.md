@@ -67,7 +67,7 @@ The simplest way to call the package is using the Facade:
 $tld_array = Tlds::fresh();
 
 // or if you prefer to not use Facades:
-$tld_array = $app->make(Hampel\Tlds\Tlds::class)->fresh();
+$tld_array = $app->make(Hampel\Tlds\TldManager::class)->fresh();
 ```
 
 This returns a "fresh" copy of the data (bypassing the cache) as an array of TLDs.
