@@ -1,14 +1,23 @@
 CHANGELOG
 =========
 
-1.10.1 (2022-08-11)
+2.0.0 (2023-06-13)
 ------------------
+
+* complete rewrite - contains breaking changes from v1.x
+* same functionality as v1.x, but implemented differently
+* implements new Laravel v10.x custom validation classes, incompatible with previous versions
+* if not using validation, should in theory work on Laravel 8.x and 9.x, but this has not yet been tested
+* more comprehensive unit tests
+
+1.10.1 (2022-08-11)
+-------------------
 
 * move config out of src directory; mergeConfigFrom should be in register method
 * move lang out of src directory; publish language files
 
 1.10.0 (2022-08-11)
-------------------
+-------------------
 
 * works with Laravel 9.x
 

@@ -48,13 +48,13 @@ return [
 	|
 	| If 'source' is set to 'filesystem', set this to the name of the Laravel
 	| filesystem (using Flysystem) which has been configured as the location
-	| the source data is stored in
+	| the source data is stored in. Specify null to use the default filesystem
 	|
-	| Default: 'default'
+	| Default: null
 	|
 	*/
 
-	'disk' => 'default',
+	'disk' => null,
 
 	/*
 	|--------------------------------------------------------------------------

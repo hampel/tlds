@@ -1,11 +1,9 @@
 <?php namespace Hampel\Tlds\Console;
 
-use Hampel\Tlds\Tlds;
-
+use Hampel\Tlds\Exceptions\FetchException;
+use Hampel\Tlds\TldManager;
 use Illuminate\Console\Command;
-use Illuminate\Config\Repository as Config;
-use \Illuminate\Contracts\Cache\Repository as Cache;
-
+use Illuminate\Support\Facades\Log;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 
@@ -27,54 +25,30 @@ class UpdateTlds extends Command
 	protected $description = 'Fetch the latest version of the TLD list and refresh the cache';
 
 	/**
-	 * @var \Hampel\Tlds\Tlds
-	 */
-	private $tlds;
-
-	/**
-	 * @var \Illuminate\Config\Repository
-	 */
-	private $config;
-
-	/**
-	 * @var \Illuminate\Contracts\Cache\Repository
-	 */
-	private $cache;
-
-	/**
-	 * Create a new command instance.
-	 *
-	 * @return void
-	 */
-	public function __construct(Tlds $tlds, Config $config, Cache $cache)
-	{
-		parent::__construct();
-		$this->tlds = $tlds;
-		$this->config = $config;
-		$this->cache = $cache;
-	}
-
-	/**
 	 * Execute the console command.
 	 *
 	 * @return mixed
 	 */
-	public function handle()
+	public function handle(TldManager $tldManager)
 	{
+        // clear the cache
+        $tldManager->forget();
+
 		try
 		{
-			$tlds = $this->tlds->fresh();
+			$tlds = $tldManager->fresh();
+            $tldManager->put($tlds);
 
-			$expiry = $this->config->get('tlds.cache.expiry');
-			$key = $this->config->get('tlds.cache.key');
+			$this->info("Added " . count($tlds) . " TLDs to the cache");
 
-			$this->cache->put($key, $tlds, $expiry);
-
-			$this->info("Added " . count($tlds) . " TLDs to the TLD Cache");
+            return 0; // success
 		}
-		catch (\Exception $e)
+		catch (FetchException $e)
 		{
+            Log::error($e->getMessage(), ['code' => $e->getCode(), 'exception' => get_class($e)]);
 			$this->error($e->getMessage() . ($e->getCode() ? " [" . $e->getCode() . "]" : ""));
+
+            return 1; // failure
 		}
 	}
 }
