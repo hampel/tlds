@@ -14,8 +14,9 @@ By [Simon Hampel](mailto:simon@hampelgroup.com)
 Compatibility
 -------------
 
-- Laravel 9.x - use hampel/tlds v1.10.x
-- Laravel 10.x - use hampel/tlds v2.x
+- Laravel 9.x - use hampel/tlds 1.10.x
+- Laravel 10.x - use hampel/tlds 2.x
+- Laravel 11.x - use hampel/tlds 2.1.x
 
 Installation
 ------------
