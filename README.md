@@ -1,6 +1,7 @@
 Top Level Domain Fetcher for Laravel
 ====================================
 
+[![Tests](https://github.com/hampel/tlds/actions/workflows/tests.yml/badge.svg)](https://github.com/hampel/tlds/actions/workflows/tests.yml)
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/hampel/tlds.svg?style=flat-square)](https://packagist.org/packages/hampel/tlds)
 [![Total Downloads](https://img.shields.io/packagist/dt/hampel/tlds.svg?style=flat-square)](https://packagist.org/packages/hampel/tlds)
 [![Open Issues](https://img.shields.io/github/issues-raw/hampel/tlds.svg?style=flat-square)](https://github.com/hampel/tlds/issues)
@@ -17,6 +18,9 @@ Compatibility
 - Laravel 9.x - use hampel/tlds 1.10.x
 - Laravel 10.x - use hampel/tlds 2.x
 - Laravel 11.x - use hampel/tlds 2.1.x
+- Laravel 12.x and 13.x - use hampel/tlds 3.x
+
+Requires PHP 8.3 or later.
 
 Installation
 ------------
@@ -31,41 +35,27 @@ If you want to change the default Tlds configuration, first publish it using the
 $ php artisan vendor:publish --provider="Hampel\Tlds\TldServiceProvider"
 ```
 
-The config files can then be found in `config/tlds.php`.
+The config file can then be found in `config/tlds.php`.
 
 Configuration
 -------------
 
-Refer to the configuration file  for more details about configuration options.
+__tlds.url__ - the URL to retrieve the data from. By default this is set to the IANA source file
 
 __tlds.cache.expiry__ - sets the cache expiry time in seconds
 
 __tlds.cache.key__ - sets the key used to store the TLD data in the cache
 
-__tlds.source__ - set this to 'url' to retrieve the data from a website (eg IANA), set it to 'filesystem' to retrieve
-the data from a local source (you'll need to configure a Laravel filesystem 'disk' to make this work).
-
-__tlds.url__ - if source is set to 'url', enter the URL to retrieve the data from. By default this is set to the
-IANA source file
-
-__tlds.disk__ - if source is set to 'filesystem', enter the name of the Laravel filesystem disk you have
-configured in the 'filesystems.disks' configuration option
-
-__tlds.path__ - if source is set to 'filesystem', enter the path to the data file relative to the root path
-configured for the disk in the 'fileystems.disks' configuration option (eg. 'tlds/tlds-alpha-by-domain.txt')
+__tlds.cache.store__ - which of your application's configured cache stores to keep the data in.
+Set to null to use the default store
 
 Usage
 -----
 
-The Tlds package provides a simple mechanism for reading a data file containing a list of Top Level Domains, one per
-line and returning an array of data. This data may optionally be cached for performance.
+The Tlds package reads a data file containing a list of Top Level Domains, one per line, and returns an array of
+data. This data may optionally be cached for performance.
 
-The data file can be retrieved directly from the Internet Assigned Numbers Authority (IANA) website, using Guzzle, or
-if you have a different source or prefer to fetch the data file yourself and then read it from a local source you can
-reconfigure the Tlds package to read the data file from any Laravel supported filesystem (using Flysystem).
-
-There is also an artisan command available which can be used to fetch the latest data file to refresh the cache. This
-is ideal for automating the retrieval of data using a cron job or similar.
+The data file is retrieved from the Internet Assigned Numbers Authority (IANA) website over HTTP.
 
 The simplest way to call the package is using the Facade:
 
@@ -84,29 +74,71 @@ To fetch the TLD array from the cache or have it update automatically if the cac
 ```php
 // get the TLD list from the cache (or update the cache if it has expired)
 $tld_array = Tlds::get();
-
-// if you prefer to manage the cache yourself, you can do this all manually, for example:
-if (Cache::has(Config::get('tlds.cache.key'))
-{
-    $tld_array = Cache::get(Config::get('tlds.cache.key'));
-}
-else
-{
-    Cache::put(Config::get('tlds.cache.key'), Tlds::fresh(), Config::get('tlds.cache.expiry'));
-}
 ```
 
 To run the artisan console command to update the cache:
 
 ```bash
 $ php artisan tld:update
-Added 725 TLDs to the TLD Cache
+Added 725 TLDs to the cache
 ```
+
+This is ideal for automating the retrieval of data using a cron job or similar.
+
+Any line in the source data that is not a valid TLD is skipped, and reported by the console command:
+
+```bash
+$ php artisan tld:update
+Skipped [not-a-tld!] - did not match the TLD format
+Added 724 TLDs to the cache
+```
+
+Reading the TLD list from somewhere else
+----------------------------------------
+
+To read the list from a local file, an internal mirror, or any other source, implement
+`Hampel\Tlds\Fetcher\TldFetcher` and bind it in your application's service provider. The `tlds.url`
+setting is then unused.
+
+```php
+use Hampel\Tlds\Fetcher\TldFetcher;
+
+class AppServiceProvider extends ServiceProvider
+{
+    public function register(): void
+    {
+        $this->app->bind(TldFetcher::class, MyTldFetcher::class);
+    }
+}
+```
+
+The interface has a single method, which returns the raw file contents as a string:
+
+```php
+use Hampel\Tlds\Exceptions\FetchException;
+use Hampel\Tlds\Fetcher\TldFetcher;
+
+class MyTldFetcher implements TldFetcher
+{
+    public function fetchTlds()
+    {
+        // throw a FetchException, or a subclass of it, if the data cannot be retrieved
+        return file_get_contents('/path/to/tlds-alpha-by-domain.txt');
+    }
+}
+```
+
+The source data format is assumed to be:
+
+- one TLD per line
+- either upper or lower case
+- lines beginning with # are ignored
+- internationalized domains allowed using punycode notation
 
 Validators
 ----------
 
-This package adds additional validators for Laravel v10.x and above - refer to
+This package adds additional validators for Laravel - refer to
 [Laravel Documentation - Validation](http://laravel.com/docs/validation) for general usage instructions.
 
 __Domain__
@@ -140,7 +172,7 @@ use Hampel\Tlds\Validation\DomainIn;
 // invalid values: example.co; example.au (not in specified list of domain TLDs)
 
 $request->validate([
-    'domain' => ['required', 'string', new DomainIn(['com', 'net')],
+    'domain' => ['required', 'string', new DomainIn(['com', 'net'])],
 ]);
 ```
 
