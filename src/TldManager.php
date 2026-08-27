@@ -4,12 +4,14 @@ use Hampel\Tlds\Exceptions\NoDataException;
 use Hampel\Tlds\Fetcher\TldFetcher;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Log;
 
 class TldManager
 {
 	/** @var TldFetcher */
 	protected $fetcher;
+
+	/** @var array<int, string> lines rejected by the last process() call */
+	protected $skipped = [];
 
 	public function __construct(TldFetcher $fetcher)
 	{
@@ -68,6 +70,7 @@ class TldManager
     public function process(string $data) : array
     {
         $tlds = [];
+        $this->skipped = [];
 
         // tlds are listed one per line - split them and process individually
         foreach (explode("\n", $data) as $tld)
@@ -78,7 +81,7 @@ class TldManager
 
             if (!preg_match('/^(?:[a-z]{2,63}|xn--[a-z0-9\-]+)$/i', $tld))
             {
-                Log::warning("[TLDs] Skipped [{$tld}] - did not match regex validator");
+                $this->skipped[] = $tld; // record it for the caller to report
                 continue; // skip any invalid lines
             }
 
@@ -86,6 +89,16 @@ class TldManager
         }
 
         return $tlds;
+    }
+
+    /**
+     * The lines the last process() call rejected
+     *
+     * @return array<int, string>
+     */
+    public function skipped() : array
+    {
+        return $this->skipped;
     }
 
     /**

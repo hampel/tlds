@@ -4,7 +4,6 @@ use Hampel\Tlds\Exceptions\NoDataException;
 use Hampel\Tlds\Fetcher\TldFetcher;
 use Hampel\Tlds\TldManager;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Log;
 use Mockery as m;
 use Mockery\MockInterface;
 
@@ -63,28 +62,23 @@ class TldManagerTest extends UnitTestCase
             $mock->shouldReceive('fetchTlds')->once()->andReturn($data);
         });
 
-        $this->expectException(NoDataException::class);
-        $this->expectExceptionMessage("No data returned from TLD fetch");
-
-        Log::shouldReceive('error')->never();
-        Log::shouldReceive('warning')->withArgs(function ($arg) {
-            $messages = [
-                '[TLDs] Skipped [not a valid tld] - did not match regex validator',
-                '[TLDs] Skipped [alsonotavalidtld!] - did not match regex validator',
-                '[TLDs] Skipped [xn--] - did not match regex validator',
-                '[TLDs] Skipped [a] - did not match regex validator',
-                '[TLDs] Skipped [com2] - did not match regex validator'
-            ];
-
-            if (in_array($arg, $messages)) return true;
-            return false;
-        });
-
         $tldManager = $this->app->make(TldManager::class);
-        $tlds = $tldManager->fresh();
 
-        $this->assertIsArray($tlds);
-        $this->assertEmpty($tlds);
+        try
+        {
+            $tldManager->fresh();
+            $this->fail('expected a NoDataException');
+        }
+        catch (NoDataException $e)
+        {
+            $this->assertEquals("No data returned from TLD fetch", $e->getMessage());
+        }
+
+        // every line was rejected, which is precisely when the caller needs to see them
+        $this->assertEquals(
+            ['not a valid tld', 'alsonotavalidtld!', 'xn--', 'a', 'com2'],
+            $tldManager->skipped()
+        );
     }
 
     public function testFreshWithValidTldsReturnsArray()
@@ -94,13 +88,12 @@ class TldManagerTest extends UnitTestCase
             $mock->shouldReceive('fetchTlds')->once()->andReturn($data);
         });
 
-        Log::shouldReceive('warning')->never();
-
         $tldManager = $this->app->make(TldManager::class);
         $tlds = $tldManager->fresh();
 
         $this->assertIsArray($tlds);
         $this->assertEquals(725, count($tlds));
+        $this->assertEmpty($tldManager->skipped());
     }
 
     public function testProcessWithNoDataReturnsEmptyArray()
@@ -116,14 +109,12 @@ class TldManagerTest extends UnitTestCase
     {
         $data = file_get_contents(__DIR__ . '/mock/filter-test.txt');
 
-        Log::shouldReceive('warning')->once()->with('[TLDs] Skipped [123] - did not match regex validator');
-        Log::shouldReceive('warning')->once()->with('[TLDs] Skipped [test@example.com] - did not match regex validator');
-
         $tldManager = $this->app->make(TldManager::class);
         $tlds = $tldManager->process($data);
 
         $this->assertIsArray($tlds);
         $this->assertEquals(['academy', 'accountants', 'xn--1qqw23a', 'xn--3bst00m'], $tlds);
+        $this->assertEquals(['123', 'test@example.com'], $tldManager->skipped());
     }
 
     public function testForgetForgetsCacheKey()

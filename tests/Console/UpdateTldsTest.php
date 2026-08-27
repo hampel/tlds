@@ -4,7 +4,6 @@ use Hampel\Tlds\Exceptions\FetchException;
 use Hampel\Tlds\Fetcher\TldFetcher;
 use Hampel\Tlds\Tests\UnitTestCase;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Log;
 use Mockery\MockInterface;
 
 class UpdateTldsTest extends UnitTestCase
@@ -30,17 +29,9 @@ class UpdateTldsTest extends UnitTestCase
 
         Cache::shouldReceive('forget')->once()->with('cache-key');
 
-        Log::shouldReceive('error')
-            ->once()
-            ->with(
-                'No data returned from TLD fetch',
-                [
-                    'code' => 0,
-                    'exception' => 'Hampel\Tlds\Exceptions\NoDataException'
-                ]
-            );
-
-        $this->artisan('tld:update')->assertFailed();
+        $this->artisan('tld:update')
+            ->expectsOutputToContain('No data returned from TLD fetch')
+            ->assertFailed();
     }
 
     public function testUpdateReturnsErrorOnFetchFailure()
@@ -51,17 +42,9 @@ class UpdateTldsTest extends UnitTestCase
 
         Cache::shouldReceive('forget')->once()->with('cache-key');
 
-        Log::shouldReceive('error')
-            ->once()
-            ->with(
-                'exception-message',
-                [
-                    'code' => 0,
-                    'exception' => 'Hampel\Tlds\Exceptions\FetchException'
-                ]
-            );
-
-        $this->artisan('tld:update')->assertFailed();
+        $this->artisan('tld:update')
+            ->expectsOutputToContain('exception-message')
+            ->assertFailed();
     }
 
     public function testUpdateConsoleSucceeds()
@@ -76,5 +59,22 @@ class UpdateTldsTest extends UnitTestCase
         });
 
         $this->artisan('tld:update')->assertSuccessful();
+    }
+
+    public function testUpdateReportsSkippedLines()
+    {
+        $data = file_get_contents(__DIR__ . '/../mock/filter-test.txt');
+
+        Cache::shouldReceive('forget')->once()->with('cache-key');
+        Cache::shouldReceive('put')->once()->with('cache-key', \Mockery::type('array'), '66');
+
+        $this->mock(TldFetcher::class, function (MockInterface $mock) use ($data) {
+            $mock->shouldReceive('fetchTlds')->once()->andReturn($data);
+        });
+
+        $this->artisan('tld:update')
+            ->expectsOutputToContain('Skipped [123] - did not match the TLD format')
+            ->expectsOutputToContain('Skipped [test@example.com] - did not match the TLD format')
+            ->assertSuccessful();
     }
 }

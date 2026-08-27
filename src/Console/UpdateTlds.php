@@ -3,7 +3,6 @@
 use Hampel\Tlds\Exceptions\FetchException;
 use Hampel\Tlds\TldManager;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Log;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 
@@ -37,18 +36,32 @@ class UpdateTlds extends Command
 		try
 		{
 			$tlds = $tldManager->fresh();
-            $tldManager->put($tlds);
-
-			$this->info("Added " . count($tlds) . " TLDs to the cache");
-
-            return 0; // success
+			$tldManager->put($tlds);
 		}
 		catch (FetchException $e)
 		{
-            Log::error($e->getMessage(), ['code' => $e->getCode(), 'exception' => get_class($e)]);
+			$this->reportSkipped($tldManager);
 			$this->error($e->getMessage() . ($e->getCode() ? " [" . $e->getCode() . "]" : ""));
 
-            return 1; // failure
+			return 1; // failure
+		}
+
+		$this->reportSkipped($tldManager);
+		$this->info("Added " . count($tlds) . " TLDs to the cache");
+
+		return 0; // success
+	}
+
+	/**
+	 * Report any lines the source data was rejected for, where someone is looking
+	 *
+	 * @return void
+	 */
+	protected function reportSkipped(TldManager $tldManager) : void
+	{
+		foreach ($tldManager->skipped() as $line)
+		{
+			$this->warn("Skipped [{$line}] - did not match the TLD format");
 		}
 	}
 }
