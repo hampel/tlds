@@ -5,6 +5,9 @@ use Hampel\Tlds\Fetcher\TldFetcher;
 use Hampel\Tlds\Tests\UnitTestCase;
 use Illuminate\Contracts\Cache\Factory as CacheFactory;
 use Illuminate\Contracts\Cache\Repository;
+use Illuminate\Contracts\Config\Repository as Config;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Testing\PendingCommand;
 use Mockery\MockInterface;
 
 class UpdateTldsTest extends UnitTestCase
@@ -15,7 +18,7 @@ class UpdateTldsTest extends UnitTestCase
      */
     protected function getEnvironmentSetUp($app)
     {
-        $config = $app->get('config');
+        $config = $app->make(Config::class);
 
         $config->set('tlds.cache.key', 'cache-key');
         $config->set('tlds.cache.expiry', '66');
@@ -28,7 +31,33 @@ class UpdateTldsTest extends UnitTestCase
      */
     protected function cache(): Repository
     {
-        return $this->app->make(CacheFactory::class)->store(config('tlds.cache.store'));
+        /** @var Application $app */
+        $app = $this->app;
+
+        /** @var string|null $store */
+        $store = $app->make(Config::class)->get('tlds.cache.store');
+
+        return $app->make(CacheFactory::class)->store($store);
+    }
+
+    /**
+     * The command under test. Wrapped because artisan() is typed PendingCommand|int
+     * and only the object form is ever returned when assertions follow.
+     */
+    protected function tldUpdate(): PendingCommand
+    {
+        /** @var PendingCommand $command */
+        $command = $this->artisan('tld:update');
+
+        return $command;
+    }
+
+    protected function fixture(string $name): string
+    {
+        $data = file_get_contents(__DIR__ . '/../mock/' . $name);
+        $this->assertIsString($data, "could not read fixture {$name}");
+
+        return $data;
     }
 
     protected function fetcherReturns(string $data): void
@@ -38,27 +67,27 @@ class UpdateTldsTest extends UnitTestCase
         });
     }
 
-    public function testUpdateReturnsErrorOnNoData()
+    public function testUpdateReturnsErrorOnNoData(): void
     {
         $this->fetcherReturns('');
 
-        $this->artisan('tld:update')
+        $this->tldUpdate()
             ->expectsOutputToContain('No data returned from TLD fetch')
             ->assertFailed();
     }
 
-    public function testUpdateReturnsErrorOnFetchFailure()
+    public function testUpdateReturnsErrorOnFetchFailure(): void
     {
         $this->mock(TldFetcher::class, function (MockInterface $mock) {
             $mock->shouldReceive('fetchTlds')->once()->andThrow(new FetchException('exception-message'));
         });
 
-        $this->artisan('tld:update')
+        $this->tldUpdate()
             ->expectsOutputToContain('exception-message')
             ->assertFailed();
     }
 
-    public function testUpdateClearsStaleDataEvenWhenTheFetchFails()
+    public function testUpdateClearsStaleDataEvenWhenTheFetchFails(): void
     {
         $this->cache()->put('cache-key', ['stale'], 66);
 
@@ -66,27 +95,29 @@ class UpdateTldsTest extends UnitTestCase
             $mock->shouldReceive('fetchTlds')->once()->andThrow(new FetchException('exception-message'));
         });
 
-        $this->artisan('tld:update')->assertFailed();
+        $this->tldUpdate()->assertFailed();
 
         $this->assertNull($this->cache()->get('cache-key'));
     }
 
-    public function testUpdateConsoleSucceeds()
+    public function testUpdateConsoleSucceeds(): void
     {
-        $this->fetcherReturns(file_get_contents(__DIR__ . '/../mock/tlds-alpha-by-domain.txt'));
+        $this->fetcherReturns($this->fixture('tlds-alpha-by-domain.txt'));
 
-        $this->artisan('tld:update')
+        $this->tldUpdate()
             ->expectsOutputToContain('Added 725 TLDs to the cache')
             ->assertSuccessful();
 
-        $this->assertEquals(725, count($this->cache()->get('cache-key')));
+        /** @var array<int, string> $cached */
+        $cached = $this->cache()->get('cache-key');
+        $this->assertEquals(725, count($cached));
     }
 
-    public function testUpdateReportsSkippedLines()
+    public function testUpdateReportsSkippedLines(): void
     {
-        $this->fetcherReturns(file_get_contents(__DIR__ . '/../mock/filter-test.txt'));
+        $this->fetcherReturns($this->fixture('filter-test.txt'));
 
-        $this->artisan('tld:update')
+        $this->tldUpdate()
             ->expectsOutputToContain('Skipped [123] - did not match the TLD format')
             ->expectsOutputToContain('Skipped [test@example.com] - did not match the TLD format')
             ->assertSuccessful();

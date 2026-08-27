@@ -38,7 +38,7 @@ class TldManager
     /**
      * Get TLD data from the cache, or fetch a fresh copy if expired
      *
-     * @return array a list of TLDs
+     * @return array<int, string> a list of TLDs
      */
 	public function get() : array
 	{
@@ -51,7 +51,7 @@ class TldManager
     /**
      * Retrieve and process a fresh copy of the TLD data from our source
      *
-     * @return array array of TLD data
+     * @return array<int, string> array of TLD data
      *
      * @throws NoDataException when no valid data was found
      */
@@ -79,7 +79,7 @@ class TldManager
 
     /**
      * @param string $data a newline separated list of TLDs
-     * @return array
+     * @return array<int, string>
      */
     public function process(string $data) : array
     {
@@ -118,7 +118,7 @@ class TldManager
     /**
      * Store TLD data in the cache
      *
-     * @param array $data the TLD data to store in the cache
+     * @param array<int, string> $data the TLD data to store in the cache
      * @return void
      */
     public function put(array $data) : void

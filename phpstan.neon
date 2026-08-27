@@ -1,0 +1,14 @@
+includes:
+    - vendor/larastan/larastan/extension.neon
+
+parameters:
+    level: 10
+
+    paths:
+        - src
+        - tests
+
+    # analysed against every PHP version the package declares, in one pass
+    phpVersion:
+        min: 80300
+        max: 80500

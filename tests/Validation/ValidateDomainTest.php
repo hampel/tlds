@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Validator;
 
 class ValidateDomainTest extends ValidateUnitTestCase
 {
-    public function testDomainFailsValidation()
+    public function testDomainFailsValidation(): void
     {
         $validator = Validator::make(
             ['domain' => 'example.foo'],
@@ -16,7 +16,7 @@ class ValidateDomainTest extends ValidateUnitTestCase
         $this->assertEquals('domain must be a valid domain name', $validator->errors()->first('domain'));
     }
 
-    public function testDomainPassesValidation()
+    public function testDomainPassesValidation(): void
     {
         $validator = Validator::make(
             ['domain' => 'example.com'],

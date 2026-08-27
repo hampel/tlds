@@ -4,11 +4,11 @@ use Closure;
 
 class TldIn extends ValidationBase
 {
-    /** @var array */
+    /** @var array<int, string> */
     protected $tlds;
 
     /**
-     * @param array $tlds array of valid TLDs
+     * @param array<int, string> $tlds array of valid TLDs
      */
     public function __construct(array $tlds)
     {

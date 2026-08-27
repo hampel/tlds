@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Validator;
 
 class ValidateTldInTest extends ValidateUnitTestCase
 {
-    public function testTldInFailsValidation()
+    public function testTldInFailsValidation(): void
     {
         $validator = Validator::make(
             ['tld' => 'foo'],
@@ -16,7 +16,7 @@ class ValidateTldInTest extends ValidateUnitTestCase
         $this->assertEquals('tld must end in one of com, net, au', $validator->errors()->first('tld'));
     }
 
-    public function testTldPassesValidation()
+    public function testTldPassesValidation(): void
     {
         $validator = Validator::make(
             ['tld' => 'com'],
@@ -27,7 +27,7 @@ class ValidateTldInTest extends ValidateUnitTestCase
         $this->assertEmpty($validator->errors()->first('tld'));
     }
 
-    public function test2ldPassesValidation()
+    public function test2ldPassesValidation(): void
     {
         $validator = Validator::make(
             ['tld' => 'foo.au'],

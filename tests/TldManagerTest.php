@@ -42,10 +42,13 @@ class TldManagerTest extends TestCase
 
     protected function fixture(string $name): string
     {
-        return file_get_contents(__DIR__ . '/mock/' . $name);
+        $data = file_get_contents(__DIR__ . '/mock/' . $name);
+        $this->assertIsString($data, "could not read fixture {$name}");
+
+        return $data;
     }
 
-    public function testGetReturnsCachedDataWithoutFetching()
+    public function testGetReturnsCachedDataWithoutFetching(): void
     {
         $this->cache->put('cache-key', ['foo'], 66);
 
@@ -54,7 +57,7 @@ class TldManagerTest extends TestCase
         $this->assertEquals(['foo'], $tldManager->get());
     }
 
-    public function testGetPopulatesTheCacheUnderTheConfiguredKey()
+    public function testGetPopulatesTheCacheUnderTheConfiguredKey(): void
     {
         $tldManager = $this->manager($this->fixture('tlds-alpha-by-domain.txt'), 'somewhere-else');
 
@@ -64,7 +67,7 @@ class TldManagerTest extends TestCase
         $this->assertEquals($tlds, $this->cache->get('somewhere-else'));
     }
 
-    public function testFreshWithNoDataThrowsException()
+    public function testFreshWithNoDataThrowsException(): void
     {
         $this->expectException(NoDataException::class);
         $this->expectExceptionMessage("No data returned from TLD fetch");
@@ -72,7 +75,7 @@ class TldManagerTest extends TestCase
         $this->manager('')->fresh();
     }
 
-    public function testFreshWithBadTldsThrowsException()
+    public function testFreshWithBadTldsThrowsException(): void
     {
         $tldManager = $this->manager($this->fixture('bad-tlds.txt'));
 
@@ -93,44 +96,41 @@ class TldManagerTest extends TestCase
         );
     }
 
-    public function testFreshWithValidTldsReturnsArray()
+    public function testFreshWithValidTldsReturnsArray(): void
     {
         $tldManager = $this->manager($this->fixture('tlds-alpha-by-domain.txt'));
 
         $tlds = $tldManager->fresh();
 
-        $this->assertIsArray($tlds);
         $this->assertEquals(725, count($tlds));
         $this->assertEmpty($tldManager->skipped());
     }
 
-    public function testProcessWithNoDataReturnsEmptyArray()
+    public function testProcessWithNoDataReturnsEmptyArray(): void
     {
         $tlds = $this->manager()->process('');
 
-        $this->assertIsArray($tlds);
         $this->assertEmpty($tlds);
     }
 
-    public function testProcessReturnsFilteredData()
+    public function testProcessReturnsFilteredData(): void
     {
         $tldManager = $this->manager();
 
         $tlds = $tldManager->process($this->fixture('filter-test.txt'));
 
-        $this->assertIsArray($tlds);
         $this->assertEquals(['academy', 'accountants', 'xn--1qqw23a', 'xn--3bst00m'], $tlds);
         $this->assertEquals(['123', 'test@example.com'], $tldManager->skipped());
     }
 
-    public function testPutStoresUnderTheConfiguredKey()
+    public function testPutStoresUnderTheConfiguredKey(): void
     {
         $this->manager()->put(['foo']);
 
         $this->assertEquals(['foo'], $this->cache->get('cache-key'));
     }
 
-    public function testForgetForgetsCacheKey()
+    public function testForgetForgetsCacheKey(): void
     {
         $this->cache->put('cache-key', ['foo'], 66);
 

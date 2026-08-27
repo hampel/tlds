@@ -29,7 +29,9 @@
         "illuminate/support": "^12.0|^13.0"
     },
     "require-dev": {
+        "larastan/larastan": "^3.0",
         "orchestra/testbench": "^10.0|^11.0",
+        "phpstan/phpstan": "^2.1.22",
         "phpunit/phpunit": "^11.5.50|^12.0|^13.0"
     },
 	"conflict": {
@@ -61,6 +63,7 @@
         "sort-packages": true
     },
     "scripts": {
-        "test": "phpunit"
+        "test": "phpunit",
+        "analyse": "phpstan analyse"
     }
 }
