@@ -2,20 +2,37 @@
 
 use Hampel\Tlds\Exceptions\NoDataException;
 use Hampel\Tlds\Fetcher\TldFetcher;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Config;
+use Illuminate\Contracts\Cache\Repository as Cache;
 
 class TldManager
 {
 	/** @var TldFetcher */
 	protected $fetcher;
 
+	/** @var Cache */
+	protected $cache;
+
+	/** @var string */
+	protected $key;
+
+	/** @var int */
+	protected $expiry;
+
 	/** @var array<int, string> lines rejected by the last process() call */
 	protected $skipped = [];
 
-	public function __construct(TldFetcher $fetcher)
+	/**
+	 * @param TldFetcher $fetcher source of the raw TLD data
+	 * @param Cache $cache the store the application wants this data kept in
+	 * @param string $key cache key to store the data under
+	 * @param int $expiry how long to keep it, in seconds
+	 */
+	public function __construct(TldFetcher $fetcher, Cache $cache, string $key, int $expiry)
 	{
 		$this->fetcher = $fetcher;
+		$this->cache = $cache;
+		$this->key = $key;
+		$this->expiry = $expiry;
 	}
 
     /**
@@ -25,13 +42,10 @@ class TldManager
      */
 	public function get() : array
 	{
-		return Cache::remember(
-            Config::get('tlds.cache.key'),
-            Config::get('tlds.cache.expiry'),
-            function()
-            {
-                return $this->fresh();
-            });
+		return $this->cache->remember($this->key, $this->expiry, function ()
+		{
+			return $this->fresh();
+		});
 	}
 
     /**
@@ -109,11 +123,7 @@ class TldManager
      */
     public function put(array $data) : void
     {
-        Cache::put(
-            Config::get('tlds.cache.key'),
-            $data,
-            Config::get('tlds.cache.expiry')
-        );
+        $this->cache->put($this->key, $data, $this->expiry);
     }
 
     /**
@@ -123,6 +133,6 @@ class TldManager
      */
 	public function forget() : void
 	{
-		Cache::forget(Config::get('tlds.cache.key'));
+		$this->cache->forget($this->key);
 	}
 }

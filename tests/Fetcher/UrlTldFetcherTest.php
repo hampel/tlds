@@ -2,42 +2,43 @@
 
 use Hampel\Tlds\Exceptions\HttpException;
 use Hampel\Tlds\Fetcher\UrlTldFetcher;
-use Hampel\Tlds\Tests\UnitTestCase;
-use Illuminate\Support\Facades\Http;
+use Illuminate\Http\Client\Factory;
+use PHPUnit\Framework\TestCase;
 
-class UrlTldFetcherTest extends UnitTestCase
+/**
+ * The fetcher is handed a client and a URL, so this needs no application either.
+ */
+class UrlTldFetcherTest extends TestCase
 {
-    /**
-     * @param  \Illuminate\Foundation\Application  $app
-     * @return void
-     */
-    protected function getEnvironmentSetUp($app)
-    {
-        $config = $app->get('config');
+    protected const URL = 'http://www.example.com/tlds.txt';
 
-        $config->set('tlds.url', 'http://www.example.com/tlds.txt');
-    }
-
-    public function testfetchTlds404Error()
+    public function testFetchTlds404Error()
     {
-        Http::fake([
-            '*' => Http::response('Error', 404),
-        ]);
+        $http = new Factory();
+        $http->fake(['*' => $http->response('Error', 404)]);
 
         $this->expectException(HttpException::class);
-        $this->expectExceptionMessage("HTTP get failed fetching TLDs from http://www.example.com/tlds.txt");
+        $this->expectExceptionMessage("HTTP get failed fetching TLDs from " . self::URL);
+        $this->expectExceptionCode(404);
 
-        $fetcher = $this->app->make(UrlTldFetcher::class);
-        $fetcher->fetchTlds();
+        (new UrlTldFetcher($http, self::URL))->fetchTlds();
     }
 
-    public function testfetchTldsDataReturned()
+    public function testFetchTldsDataReturned()
     {
-        Http::fake([
-            '*' => Http::response('foo', 200),
-        ]);
+        $http = new Factory();
+        $http->fake(['*' => $http->response('foo', 200)]);
 
-        $fetcher = $this->app->make(UrlTldFetcher::class);
-        $this->assertEquals('foo', $fetcher->fetchTlds());
+        $this->assertEquals('foo', (new UrlTldFetcher($http, self::URL))->fetchTlds());
+    }
+
+    public function testFetchTldsRequestsTheConfiguredUrl()
+    {
+        $http = new Factory();
+        $http->fake(['*' => $http->response('foo', 200)]);
+
+        (new UrlTldFetcher($http, self::URL))->fetchTlds();
+
+        $http->assertSent(fn ($request) => $request->url() === self::URL);
     }
 }

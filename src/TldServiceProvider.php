@@ -3,6 +3,8 @@
 use Hampel\Tlds\Fetcher\TldFetcher;
 use Hampel\Tlds\Console\UpdateTlds;
 use Hampel\Tlds\Fetcher\UrlTldFetcher;
+use Illuminate\Contracts\Cache\Factory as CacheFactory;
+use Illuminate\Http\Client\Factory as HttpFactory;
 use Illuminate\Support\ServiceProvider;
 
 class TldServiceProvider extends ServiceProvider
@@ -38,7 +40,7 @@ class TldServiceProvider extends ServiceProvider
 	protected function defineConfiguration(): void
 	{
 		$this->publishes([
-            __DIR__ . '/../config/tlds.php' => config_path('tlds.php'),
+            __DIR__ . '/../config/tlds.php' => $this->app->configPath('tlds.php'),
 		], 'config');
 	}
 
@@ -61,7 +63,28 @@ class TldServiceProvider extends ServiceProvider
 	{
 		// bound rather than config-dispatched, so an application wanting a different
 		// source binds its own TldFetcher implementation and this one gives way
-		$this->app->bind(TldFetcher::class, UrlTldFetcher::class);
+		$this->app->bind(TldFetcher::class, function ($app)
+		{
+			return new UrlTldFetcher(
+				$app->make(HttpFactory::class),
+				$app['config']->get('tlds.url')
+			);
+		});
+
+		// this provider is the only place that reads configuration: everything
+		// downstream is handed what it needs, including the store the application
+		// wants this data kept in
+		$this->app->singleton(TldManager::class, function ($app)
+		{
+			$config = $app['config'];
+
+			return new TldManager(
+				$app->make(TldFetcher::class),
+				$app->make(CacheFactory::class)->store($config->get('tlds.cache.store')),
+				$config->get('tlds.cache.key'),
+				(int) $config->get('tlds.cache.expiry')
+			);
+		});
 	}
 
     /**

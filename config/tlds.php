@@ -57,5 +57,19 @@ return [
 
 		'key' => 'tlds',
 
+		/*
+		|--------------------------------------------------------------------------
+		| Cache Store
+		|--------------------------------------------------------------------------
+		|
+		| Which of the application's configured cache stores to keep the TLD data
+		| in. Specify null to use the application's default store.
+		|
+		| Default: null
+		|
+		*/
+
+		'store' => null,
+
 	],
 ];

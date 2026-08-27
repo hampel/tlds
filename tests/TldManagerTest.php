@@ -3,65 +3,78 @@
 use Hampel\Tlds\Exceptions\NoDataException;
 use Hampel\Tlds\Fetcher\TldFetcher;
 use Hampel\Tlds\TldManager;
-use Illuminate\Support\Facades\Cache;
-use Mockery as m;
-use Mockery\MockInterface;
+use Illuminate\Cache\ArrayStore;
+use Illuminate\Cache\Repository;
+use PHPUnit\Framework\TestCase;
 
-class TldManagerTest extends UnitTestCase
+/**
+ * Everything here is constructed directly - the manager takes its collaborators
+ * rather than reaching for facades, so none of it needs a booted application.
+ */
+class TldManagerTest extends TestCase
 {
-    /**
-     * @param  \Illuminate\Foundation\Application  $app
-     * @return void
-     */
-    protected function getEnvironmentSetUp($app)
-    {
-        $config = $app->get('config');
+    protected Repository $cache;
 
-        $config->set('tlds.cache.key', 'cache-key');
-        $config->set('tlds.cache.expiry', '66');
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->cache = new Repository(new ArrayStore());
     }
 
-    public function testGetReturnsCachedData()
+    protected function manager(string $data = '', string $key = 'cache-key', int $expiry = 66): TldManager
     {
-        Cache::shouldReceive('remember')
-            ->once()
-            ->with('cache-key', '66', m::on(function ($closure) {
-                $this->mock(TldFetcher::class, function (MockInterface $mock) {
-                    $mock->shouldReceive('fetchTlds')->never();
-                });
+        $fetcher = new class ($data) implements TldFetcher {
+            public int $calls = 0;
 
-                return true;
-            }))
-            ->andReturn(['foo']);
+            public function __construct(protected string $data) {}
 
-        $tldManager = $this->app->make(TldManager::class);
+            public function fetchTlds()
+            {
+                $this->calls++;
+
+                return $this->data;
+            }
+        };
+
+        return new TldManager($fetcher, $this->cache, $key, $expiry);
+    }
+
+    protected function fixture(string $name): string
+    {
+        return file_get_contents(__DIR__ . '/mock/' . $name);
+    }
+
+    public function testGetReturnsCachedDataWithoutFetching()
+    {
+        $this->cache->put('cache-key', ['foo'], 66);
+
+        $tldManager = $this->manager($this->fixture('tlds-alpha-by-domain.txt'));
+
+        $this->assertEquals(['foo'], $tldManager->get());
+    }
+
+    public function testGetPopulatesTheCacheUnderTheConfiguredKey()
+    {
+        $tldManager = $this->manager($this->fixture('tlds-alpha-by-domain.txt'), 'somewhere-else');
+
         $tlds = $tldManager->get();
 
-        $this->assertIsArray($tlds);
-        $this->assertEquals(['foo'], $tlds);
+        $this->assertEquals(725, count($tlds));
+        $this->assertEquals($tlds, $this->cache->get('somewhere-else'));
     }
 
     public function testFreshWithNoDataThrowsException()
     {
-        $this->mock(TldFetcher::class, function (MockInterface $mock) {
-            $mock->shouldReceive('fetchTlds')->once()->andReturn('');
-        });
-
         $this->expectException(NoDataException::class);
         $this->expectExceptionMessage("No data returned from TLD fetch");
 
-        $tldManager = $this->app->make(TldManager::class);
-        $this->assertEmpty($tldManager->fresh());
+        $this->manager('')->fresh();
     }
 
     public function testFreshWithBadTldsThrowsException()
     {
-        $this->mock(TldFetcher::class, function (MockInterface $mock) {
-            $data = file_get_contents(__DIR__ . '/mock/bad-tlds.txt');
-            $mock->shouldReceive('fetchTlds')->once()->andReturn($data);
-        });
-
-        $tldManager = $this->app->make(TldManager::class);
+        $tldManager = $this->manager($this->fixture('bad-tlds.txt'));
 
         try
         {
@@ -82,12 +95,8 @@ class TldManagerTest extends UnitTestCase
 
     public function testFreshWithValidTldsReturnsArray()
     {
-        $this->mock(TldFetcher::class, function (MockInterface $mock) {
-            $data = file_get_contents(__DIR__ . '/mock/tlds-alpha-by-domain.txt');
-            $mock->shouldReceive('fetchTlds')->once()->andReturn($data);
-        });
+        $tldManager = $this->manager($this->fixture('tlds-alpha-by-domain.txt'));
 
-        $tldManager = $this->app->make(TldManager::class);
         $tlds = $tldManager->fresh();
 
         $this->assertIsArray($tlds);
@@ -97,8 +106,7 @@ class TldManagerTest extends UnitTestCase
 
     public function testProcessWithNoDataReturnsEmptyArray()
     {
-        $tldManager = $this->app->make(TldManager::class);
-        $tlds = $tldManager->process('');
+        $tlds = $this->manager()->process('');
 
         $this->assertIsArray($tlds);
         $this->assertEmpty($tlds);
@@ -106,21 +114,28 @@ class TldManagerTest extends UnitTestCase
 
     public function testProcessReturnsFilteredData()
     {
-        $data = file_get_contents(__DIR__ . '/mock/filter-test.txt');
+        $tldManager = $this->manager();
 
-        $tldManager = $this->app->make(TldManager::class);
-        $tlds = $tldManager->process($data);
+        $tlds = $tldManager->process($this->fixture('filter-test.txt'));
 
         $this->assertIsArray($tlds);
         $this->assertEquals(['academy', 'accountants', 'xn--1qqw23a', 'xn--3bst00m'], $tlds);
         $this->assertEquals(['123', 'test@example.com'], $tldManager->skipped());
     }
 
+    public function testPutStoresUnderTheConfiguredKey()
+    {
+        $this->manager()->put(['foo']);
+
+        $this->assertEquals(['foo'], $this->cache->get('cache-key'));
+    }
+
     public function testForgetForgetsCacheKey()
     {
-        Cache::shouldReceive('forget')->with('cache-key')->once();
+        $this->cache->put('cache-key', ['foo'], 66);
 
-        $tldManager = $this->app->make(TldManager::class);
-        $tldManager->forget();
+        $this->manager()->forget();
+
+        $this->assertNull($this->cache->get('cache-key'));
     }
 }
