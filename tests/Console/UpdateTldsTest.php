@@ -110,7 +110,7 @@ class UpdateTldsTest extends UnitTestCase
 
         /** @var array<int, string> $cached */
         $cached = $this->cache()->get('cache-key');
-        $this->assertEquals(725, count($cached));
+        $this->assertSame(725, count($cached));
     }
 
     public function testUpdateReportsSkippedLines(): void

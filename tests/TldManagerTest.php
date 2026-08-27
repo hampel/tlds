@@ -54,7 +54,7 @@ class TldManagerTest extends TestCase
 
         $tldManager = $this->manager($this->fixture('tlds-alpha-by-domain.txt'));
 
-        $this->assertEquals(['foo'], $tldManager->get());
+        $this->assertSame(['foo'], $tldManager->get());
     }
 
     public function testGetPopulatesTheCacheUnderTheConfiguredKey(): void
@@ -63,8 +63,8 @@ class TldManagerTest extends TestCase
 
         $tlds = $tldManager->get();
 
-        $this->assertEquals(725, count($tlds));
-        $this->assertEquals($tlds, $this->cache->get('somewhere-else'));
+        $this->assertSame(725, count($tlds));
+        $this->assertSame($tlds, $this->cache->get('somewhere-else'));
     }
 
     public function testFreshWithNoDataThrowsException(): void
@@ -86,11 +86,11 @@ class TldManagerTest extends TestCase
         }
         catch (NoDataException $e)
         {
-            $this->assertEquals("No data returned from TLD fetch", $e->getMessage());
+            $this->assertSame("No data returned from TLD fetch", $e->getMessage());
         }
 
         // every line was rejected, which is precisely when the caller needs to see them
-        $this->assertEquals(
+        $this->assertSame(
             ['not a valid tld', 'alsonotavalidtld!', 'xn--', 'a', 'com2'],
             $tldManager->skipped()
         );
@@ -102,7 +102,7 @@ class TldManagerTest extends TestCase
 
         $tlds = $tldManager->fresh();
 
-        $this->assertEquals(725, count($tlds));
+        $this->assertSame(725, count($tlds));
         $this->assertEmpty($tldManager->skipped());
     }
 
@@ -119,15 +119,15 @@ class TldManagerTest extends TestCase
 
         $tlds = $tldManager->process($this->fixture('filter-test.txt'));
 
-        $this->assertEquals(['academy', 'accountants', 'xn--1qqw23a', 'xn--3bst00m'], $tlds);
-        $this->assertEquals(['123', 'test@example.com'], $tldManager->skipped());
+        $this->assertSame(['academy', 'accountants', 'xn--1qqw23a', 'xn--3bst00m'], $tlds);
+        $this->assertSame(['123', 'test@example.com'], $tldManager->skipped());
     }
 
     public function testPutStoresUnderTheConfiguredKey(): void
     {
         $this->manager()->put(['foo']);
 
-        $this->assertEquals(['foo'], $this->cache->get('cache-key'));
+        $this->assertSame(['foo'], $this->cache->get('cache-key'));
     }
 
     public function testForgetForgetsCacheKey(): void

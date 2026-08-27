@@ -13,7 +13,7 @@ class ValidateDomainTest extends ValidateUnitTestCase
         );
 
         $this->assertTrue($validator->fails());
-        $this->assertEquals('domain must be a valid domain name', $validator->errors()->first('domain'));
+        $this->assertSame('domain must be a valid domain name', $validator->errors()->first('domain'));
     }
 
     public function testDomainPassesValidation(): void

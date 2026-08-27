@@ -30,7 +30,7 @@ class UrlTldFetcherTest extends TestCase
         $http = new Factory();
         $http->fake(['*' => $http->response('foo', 200)]);
 
-        $this->assertEquals('foo', (new UrlTldFetcher($http, self::URL))->fetchTlds());
+        $this->assertSame('foo', (new UrlTldFetcher($http, self::URL))->fetchTlds());
     }
 
     public function testFetchTldsRequestsTheConfiguredUrl(): void

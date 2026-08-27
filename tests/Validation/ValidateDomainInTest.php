@@ -13,7 +13,7 @@ class ValidateDomainInTest extends ValidateUnitTestCase
         );
 
         $this->assertTrue($validator->fails());
-        $this->assertEquals('domain TLD must be one of com, net', $validator->errors()->first('domain'));
+        $this->assertSame('domain TLD must be one of com, net', $validator->errors()->first('domain'));
     }
 
     public function testDomainInPassesValidation(): void

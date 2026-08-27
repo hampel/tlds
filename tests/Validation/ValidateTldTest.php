@@ -13,7 +13,7 @@ class ValidateTldTest extends ValidateUnitTestCase
         );
 
         $this->assertTrue($validator->fails());
-        $this->assertEquals('tld must have a valid top-level-domain (TLD)', $validator->errors()->first('tld'));
+        $this->assertSame('tld must have a valid top-level-domain (TLD)', $validator->errors()->first('tld'));
     }
 
     public function testTldPassesValidation(): void

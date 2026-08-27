@@ -13,7 +13,7 @@ class ValidateTldInTest extends ValidateUnitTestCase
         );
 
         $this->assertTrue($validator->fails());
-        $this->assertEquals('tld must end in one of com, net, au', $validator->errors()->first('tld'));
+        $this->assertSame('tld must end in one of com, net, au', $validator->errors()->first('tld'));
     }
 
     public function testTldPassesValidation(): void
