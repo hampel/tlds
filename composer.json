@@ -23,14 +23,14 @@
 		"MIT"
 	],
     "require": {
-		"illuminate/support": "^10.0|^11.0",
+		"illuminate/support": "^12.0|^13.0",
 		"hampel/validate": "~2.2",
-        "php": ">=7.3"
+        "php": ">=8.3"
     },
 	"require-dev": {
         "guzzlehttp/guzzle": "^7.0",
-		"phpunit/phpunit": "^10.0",
-        "orchestra/testbench": "^9.0"
+		"phpunit/phpunit": "^11.5.50|^12.0|^13.0",
+        "orchestra/testbench": "^10.0|^11.0"
 	},
 	"conflicts": {
 		"hampel/validate-laravel": "<2.0"
