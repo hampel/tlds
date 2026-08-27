@@ -21,15 +21,17 @@
 	],
 	"license" : "MIT",
     "require": {
-		"illuminate/support": "^12.0|^13.0",
-		"hampel/validate": "~2.2",
-        "php": ">=8.3"
+        "php": ">=8.3",
+        "hampel/validate": "~2.2",
+        "illuminate/console": "^12.0|^13.0",
+        "illuminate/contracts": "^12.0|^13.0",
+        "illuminate/http": "^12.0|^13.0",
+        "illuminate/support": "^12.0|^13.0"
     },
-	"require-dev": {
-        "guzzlehttp/guzzle": "^7.0",
-		"phpunit/phpunit": "^11.5.50|^12.0|^13.0",
-        "orchestra/testbench": "^10.0|^11.0"
-	},
+    "require-dev": {
+        "orchestra/testbench": "^10.0|^11.0",
+        "phpunit/phpunit": "^11.5.50|^12.0|^13.0"
+    },
 	"conflict": {
 		"hampel/validate-laravel": "<2.0"
     },
