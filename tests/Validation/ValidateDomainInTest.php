@@ -1,4 +1,6 @@
-<?php namespace Hampel\Tlds\Tests\Validation;
+<?php
+
+namespace Hampel\Tlds\Tests\Validation;
 
 use Hampel\Tlds\Validation\DomainIn;
 use Illuminate\Support\Facades\Validator;

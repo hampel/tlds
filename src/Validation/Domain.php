@@ -1,4 +1,6 @@
-<?php namespace Hampel\Tlds\Validation;
+<?php
+
+namespace Hampel\Tlds\Validation;
 
 use Closure;
 use Hampel\Tlds\Facades\Tlds;
@@ -10,8 +12,7 @@ class Domain extends ValidationBase
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        if (!$this->validator->isDomain($value, Tlds::get()))
-        {
+        if (!$this->validator->isDomain($value, Tlds::get())) {
             $fail($attribute, 'tlds::validation.domain')
                 ->translate(['attribute' => $attribute]);
         }

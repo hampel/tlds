@@ -1,6 +1,7 @@
-<?php namespace Hampel\Tlds\Exceptions;
+<?php
+
+namespace Hampel\Tlds\Exceptions;
 
 class FetchException extends RuntimeException
 {
-
 }

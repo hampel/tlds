@@ -1,4 +1,6 @@
-<?php  namespace Hampel\Tlds\Exceptions;
+<?php
+
+namespace Hampel\Tlds\Exceptions;
 
 /**
  * Interface Exception
@@ -7,5 +9,4 @@
  */
 interface Exception
 {
-
 }

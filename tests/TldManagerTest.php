@@ -1,4 +1,6 @@
-<?php namespace Hampel\Tlds\Tests;
+<?php
+
+namespace Hampel\Tlds\Tests;
 
 use Hampel\Tlds\Exceptions\NoDataException;
 use Hampel\Tlds\Fetcher\TldFetcher;
@@ -27,7 +29,9 @@ class TldManagerTest extends TestCase
         $fetcher = new class ($data) implements TldFetcher {
             public int $calls = 0;
 
-            public function __construct(protected string $data) {}
+            public function __construct(protected string $data)
+            {
+            }
 
             public function fetchTlds()
             {
@@ -79,13 +83,10 @@ class TldManagerTest extends TestCase
     {
         $tldManager = $this->manager($this->fixture('bad-tlds.txt'));
 
-        try
-        {
+        try {
             $tldManager->fresh();
             $this->fail('expected a NoDataException');
-        }
-        catch (NoDataException $e)
-        {
+        } catch (NoDataException $e) {
             $this->assertSame("No data returned from TLD fetch", $e->getMessage());
         }
 

@@ -1,4 +1,6 @@
-<?php namespace Hampel\Tlds\Facades;
+<?php
+
+namespace Hampel\Tlds\Facades;
 
 use Hampel\Tlds\TldManager;
 use Illuminate\Support\Facades\Facade;
@@ -14,8 +16,11 @@ use Illuminate\Support\Facades\Facade;
  *
  * @see TldManager
  */
-class Tlds extends Facade {
-
-    protected static function getFacadeAccessor() { return TldManager::class; }
+class Tlds extends Facade
+{
+    protected static function getFacadeAccessor()
+    {
+        return TldManager::class;
+    }
 
 }

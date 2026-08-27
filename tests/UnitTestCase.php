@@ -1,4 +1,6 @@
-<?php namespace Hampel\Tlds\Tests;
+<?php
+
+namespace Hampel\Tlds\Tests;
 
 use Hampel\Tlds\TldServiceProvider;
 use Orchestra\Testbench\TestCase;

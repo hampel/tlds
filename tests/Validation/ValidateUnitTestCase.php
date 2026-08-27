@@ -1,4 +1,6 @@
-<?php namespace Hampel\Tlds\Tests\Validation;
+<?php
+
+namespace Hampel\Tlds\Tests\Validation;
 
 use Hampel\Tlds\Facades\Tlds;
 use Hampel\Tlds\Tests\UnitTestCase;

@@ -1,4 +1,6 @@
-<?php namespace Hampel\Tlds\Tests\Fetcher;
+<?php
+
+namespace Hampel\Tlds\Tests\Fetcher;
 
 use Hampel\Tlds\Exceptions\HttpException;
 use Hampel\Tlds\Fetcher\UrlTldFetcher;

@@ -1,4 +1,6 @@
-<?php namespace Hampel\Tlds\Tests\Validation;
+<?php
+
+namespace Hampel\Tlds\Tests\Validation;
 
 use Hampel\Tlds\Validation\Tld;
 use Illuminate\Support\Facades\Validator;
@@ -9,7 +11,7 @@ class ValidateTldTest extends ValidateUnitTestCase
     {
         $validator = Validator::make(
             ['tld' => 'foo'],
-            ['tld' => [new Tld]]
+            ['tld' => [new Tld()]]
         );
 
         $this->assertTrue($validator->fails());
@@ -20,7 +22,7 @@ class ValidateTldTest extends ValidateUnitTestCase
     {
         $validator = Validator::make(
             ['tld' => 'com'],
-            ['tld' => [new Tld]]
+            ['tld' => [new Tld()]]
         );
 
         $this->assertTrue($validator->passes());
@@ -31,7 +33,7 @@ class ValidateTldTest extends ValidateUnitTestCase
     {
         $validator = Validator::make(
             ['tld' => 'foo.au'],
-            ['tld' => [new Tld]]
+            ['tld' => [new Tld()]]
         );
 
         $this->assertTrue($validator->passes());

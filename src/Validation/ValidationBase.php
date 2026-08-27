@@ -1,4 +1,6 @@
-<?php namespace Hampel\Tlds\Validation;
+<?php
+
+namespace Hampel\Tlds\Validation;
 
 use Hampel\Validate\Validator;
 use Illuminate\Contracts\Validation\ValidationRule;

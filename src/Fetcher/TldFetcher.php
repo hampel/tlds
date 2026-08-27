@@ -1,4 +1,6 @@
-<?php namespace Hampel\Tlds\Fetcher;
+<?php
+
+namespace Hampel\Tlds\Fetcher;
 
 use Hampel\Tlds\Exceptions\FetchException;
 
@@ -9,5 +11,5 @@ interface TldFetcher
      *
      * @throws FetchException
      */
-	public function fetchTlds();
+    public function fetchTlds();
 }

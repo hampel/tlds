@@ -1,4 +1,6 @@
-<?php namespace Hampel\Tlds\Tests\Console;
+<?php
+
+namespace Hampel\Tlds\Tests\Console;
 
 use Hampel\Tlds\Exceptions\FetchException;
 use Hampel\Tlds\Fetcher\TldFetcher;

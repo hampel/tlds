@@ -1,4 +1,6 @@
-<?php namespace Hampel\Tlds\Validation;
+<?php
+
+namespace Hampel\Tlds\Validation;
 
 use Closure;
 
@@ -21,8 +23,7 @@ class TldIn extends ValidationBase
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        if (!$this->validator->isTld($value, $this->tlds))
-        {
+        if (!$this->validator->isTld($value, $this->tlds)) {
             $fail($attribute, 'tlds::validation.tld_in')
                 ->translate([
                     'attribute' => $attribute,
