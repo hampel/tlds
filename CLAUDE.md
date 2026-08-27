@@ -10,12 +10,12 @@ application through a facade, an artisan command, and four validation rules.
 The rules are a thin wrapper: the matching itself lives in
 [`hampel/validate`](https://packagist.org/packages/hampel/validate) (`isDomain()`, `isTld()`), a
 plain PHP library with no service provider of its own. This package supplies the *TLD list* those
-functions take as a second argument. That division is also why `conflict` names
-`hampel/validate-laravel < 2.0`, which used to register overlapping rules.
+functions take as a second argument.
 
 **The validators are the product; fetch-and-parse is the implementation underneath.** Strip the
-Laravel integration and what remains is a URL, one regex and a parse loop — which is why this is a
-Laravel package rather than a plain library with a wrapper, unlike `validate`/`validate-laravel`.
+Laravel integration and what remains is a URL, one regex and a parse loop — too little to stand as a
+library of its own. That is why this is a Laravel package rather than a plain core with a thin
+wrapper over it, which is the usual shape here.
 
 ## Commands
 

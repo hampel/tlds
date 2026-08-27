@@ -25,8 +25,6 @@ Fixed:
 
 * declared the `illuminate/*` components the package uses; only `illuminate/support` was declared,
   and the artisan command could not be loaded without `laravel/framework` present
-* the conflict with `hampel/validate-laravel` below 2.0 is now applied; the `composer.json` property
-  was misspelled and had no effect
 * corrected the `DomainIn` example in the README
 
 To read the TLD list from a local file or another source, implement
