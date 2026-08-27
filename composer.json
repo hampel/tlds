@@ -1,25 +1,27 @@
 {
     "name": "hampel/tlds",
     "description": "Fetches the latest list of Top Level Domains from IANA, plus Laravel classes for validating TLDs",
-	"homepage" : "https://github.com/hampel/tlds",
-	"authors": [{
-		"name": "Simon Hampel",
-		"email": "simon@hampelgroup.com"
-	}],
-	"support": {
-		"issues": "https://github.com/hampel/tlds/issues",
-		"source": "https://github.com/hampel/tlds"
-	},
-	"keywords": [
-		"tld",
-		"domain",
-		"iana",
-		"domain name",
-		"laravel",
+    "homepage": "https://github.com/hampel/tlds",
+    "authors": [
+        {
+            "name": "Simon Hampel",
+            "email": "simon@hampelgroup.com"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/hampel/tlds/issues",
+        "source": "https://github.com/hampel/tlds"
+    },
+    "keywords": [
+        "tld",
+        "domain",
+        "iana",
+        "domain name",
+        "laravel",
         "top-level-domains",
         "domain-names"
-	],
-	"license" : "MIT",
+    ],
+    "license": "MIT",
     "require": {
         "php": ">=8.3",
         "hampel/validate": "~2.2",
@@ -44,19 +46,17 @@
         "psr-4": {
             "Hampel\\Tlds\\Tests\\": "tests/"
         }
-	},
- 	"minimum-stability": "dev",
-	"prefer-stable": true,
-	"extra": {
-		"laravel": {
-			"providers": [
-				"Hampel\\Tlds\\TldServiceProvider"
-			],
-			"aliases": {
-				"Tlds": "Hampel\\Tlds\\Facades\\Tlds"
-			}
-		}
-	},
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Hampel\\Tlds\\TldServiceProvider"
+            ],
+            "aliases": {
+                "Tlds": "Hampel\\Tlds\\Facades\\Tlds"
+            }
+        }
+    },
     "config": {
         "sort-packages": true
     },
