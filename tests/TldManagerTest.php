@@ -3,8 +3,8 @@
 namespace Hampel\Tlds\Tests;
 
 use Hampel\Tlds\Exceptions\NoDataException;
-use Hampel\Tlds\Fetcher\TldFetcher;
 use Hampel\Tlds\TldManager;
+use Hampel\Tlds\Tests\Fakes\FakeTldFetcher;
 use Illuminate\Cache\ArrayStore;
 use Illuminate\Cache\Repository;
 use PHPUnit\Framework\TestCase;
@@ -26,22 +26,7 @@ class TldManagerTest extends TestCase
 
     protected function manager(string $data = '', string $key = 'cache-key', int $expiry = 66): TldManager
     {
-        $fetcher = new class ($data) implements TldFetcher {
-            public int $calls = 0;
-
-            public function __construct(protected string $data)
-            {
-            }
-
-            public function fetchTlds()
-            {
-                $this->calls++;
-
-                return $this->data;
-            }
-        };
-
-        return new TldManager($fetcher, $this->cache, $key, $expiry);
+        return new TldManager(new FakeTldFetcher($data), $this->cache, $key, $expiry);
     }
 
     protected function fixture(string $name): string

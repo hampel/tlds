@@ -88,8 +88,13 @@ class TldServiceProvider extends ServiceProvider
             /** @var int|string $expiry */
             $expiry = $config->get('tlds.cache.expiry');
 
+            // annotated because older larastan does not narrow make() by class-string,
+            // which the --prefer-lowest corner resolves
+            /** @var TldFetcher $fetcher */
+            $fetcher = $app->make(TldFetcher::class);
+
             return new TldManager(
-                $app->make(TldFetcher::class),
+                $fetcher,
                 $app->make(CacheFactory::class)->store($store),
                 $key,
                 (int) $expiry

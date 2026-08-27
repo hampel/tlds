@@ -1,0 +1,13 @@
+{
+    "symbol-whitelist": [
+        "Illuminate\\Console\\Command",
+        "Illuminate\\Contracts\\Cache\\Factory",
+        "Illuminate\\Contracts\\Cache\\Repository",
+        "Illuminate\\Contracts\\Config\\Repository",
+        "Illuminate\\Contracts\\Validation\\ValidationRule",
+        "Illuminate\\Http\\Client\\Factory",
+        "Illuminate\\Support\\Facades\\App",
+        "Illuminate\\Support\\Facades\\Facade",
+        "Illuminate\\Support\\ServiceProvider"
+    ]
+}

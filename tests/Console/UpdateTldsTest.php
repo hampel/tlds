@@ -4,13 +4,13 @@ namespace Hampel\Tlds\Tests\Console;
 
 use Hampel\Tlds\Exceptions\FetchException;
 use Hampel\Tlds\Fetcher\TldFetcher;
+use Hampel\Tlds\Tests\Fakes\FakeTldFetcher;
 use Hampel\Tlds\Tests\UnitTestCase;
 use Illuminate\Contracts\Cache\Factory as CacheFactory;
 use Illuminate\Contracts\Cache\Repository;
 use Illuminate\Contracts\Config\Repository as Config;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Testing\PendingCommand;
-use Mockery\MockInterface;
 
 class UpdateTldsTest extends UnitTestCase
 {
@@ -62,53 +62,68 @@ class UpdateTldsTest extends UnitTestCase
         return $data;
     }
 
-    protected function fetcherReturns(string $data): void
+    protected function fetcherReturns(string $data): FakeTldFetcher
     {
-        $this->mock(TldFetcher::class, function (MockInterface $mock) use ($data) {
-            $mock->shouldReceive('fetchTlds')->once()->andReturn($data);
-        });
+        return $this->bindFetcher(new FakeTldFetcher($data));
+    }
+
+    protected function fetcherThrows(FetchException $e): FakeTldFetcher
+    {
+        return $this->bindFetcher(new FakeTldFetcher('', $e));
+    }
+
+    protected function bindFetcher(FakeTldFetcher $fetcher): FakeTldFetcher
+    {
+        /** @var Application $app */
+        $app = $this->app;
+        $app->instance(TldFetcher::class, $fetcher);
+
+        return $fetcher;
     }
 
     public function testUpdateReturnsErrorOnNoData(): void
     {
-        $this->fetcherReturns('');
+        $fetcher = $this->fetcherReturns('');
 
         $this->tldUpdate()
             ->expectsOutputToContain('No data returned from TLD fetch')
             ->assertFailed();
+
+        $this->assertSame(1, $fetcher->calls);
     }
 
     public function testUpdateReturnsErrorOnFetchFailure(): void
     {
-        $this->mock(TldFetcher::class, function (MockInterface $mock) {
-            $mock->shouldReceive('fetchTlds')->once()->andThrow(new FetchException('exception-message'));
-        });
+        $fetcher = $this->fetcherThrows(new FetchException('exception-message'));
 
         $this->tldUpdate()
             ->expectsOutputToContain('exception-message')
             ->assertFailed();
+
+        $this->assertSame(1, $fetcher->calls);
     }
 
     public function testUpdateClearsStaleDataEvenWhenTheFetchFails(): void
     {
         $this->cache()->put('cache-key', ['stale'], 66);
 
-        $this->mock(TldFetcher::class, function (MockInterface $mock) {
-            $mock->shouldReceive('fetchTlds')->once()->andThrow(new FetchException('exception-message'));
-        });
+        $fetcher = $this->fetcherThrows(new FetchException('exception-message'));
 
         $this->tldUpdate()->assertFailed();
 
+        $this->assertSame(1, $fetcher->calls);
         $this->assertNull($this->cache()->get('cache-key'));
     }
 
     public function testUpdateConsoleSucceeds(): void
     {
-        $this->fetcherReturns($this->fixture('tlds-alpha-by-domain.txt'));
+        $fetcher = $this->fetcherReturns($this->fixture('tlds-alpha-by-domain.txt'));
 
         $this->tldUpdate()
             ->expectsOutputToContain('Added 725 TLDs to the cache')
             ->assertSuccessful();
+
+        $this->assertSame(1, $fetcher->calls);
 
         /** @var array<int, string> $cached */
         $cached = $this->cache()->get('cache-key');
