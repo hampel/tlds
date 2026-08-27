@@ -16,7 +16,6 @@ class UpdateTldsTest extends UnitTestCase
     {
         $config = $app->get('config');
 
-        $config->set('tlds.source', 'filesystem');
         $config->set('tlds.cache.key', 'cache-key');
         $config->set('tlds.cache.expiry', '66');
     }

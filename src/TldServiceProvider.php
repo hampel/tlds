@@ -4,7 +4,6 @@ use Hampel\Tlds\Fetcher\TldFetcher;
 use Hampel\Tlds\Console\UpdateTlds;
 use Hampel\Tlds\Fetcher\UrlTldFetcher;
 use Illuminate\Support\ServiceProvider;
-use Hampel\Tlds\Fetcher\FilesystemTldFetcher;
 
 class TldServiceProvider extends ServiceProvider
 {
@@ -60,12 +59,9 @@ class TldServiceProvider extends ServiceProvider
      */
 	protected function registerTlds(): void
 	{
-		$type = $this->app['config']->get('tlds.source');
-
-		$this->app->bind(
-			TldFetcher::class,
-			$type == 'filesystem' ? FilesystemTldFetcher::class : UrlTldFetcher::class
-		);
+		// bound rather than config-dispatched, so an application wanting a different
+		// source binds its own TldFetcher implementation and this one gives way
+		$this->app->bind(TldFetcher::class, UrlTldFetcher::class);
 	}
 
     /**

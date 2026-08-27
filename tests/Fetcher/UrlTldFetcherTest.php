@@ -15,7 +15,6 @@ class UrlTldFetcherTest extends UnitTestCase
     {
         $config = $app->get('config');
 
-        $config->set('tlds.source', 'url');
         $config->set('tlds.url', 'http://www.example.com/tlds.txt');
     }
 
