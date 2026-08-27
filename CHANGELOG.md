@@ -1,6 +1,38 @@
 CHANGELOG
 =========
 
+3.0.0 (2026-08-28)
+------------------
+
+Breaking changes:
+
+* minimum PHP version is now 8.3
+* works with Laravel v12.x and v13.x; support for Laravel v10.x and v11.x removed
+* removed the filesystem data source, along with `FilesystemTldFetcher` and `FilesystemException`
+* removed the `tlds.source`, `tlds.disk` and `tlds.path` configuration settings
+* `TldManager` and `UrlTldFetcher` now take their dependencies as constructor arguments
+* removed the TLD entry from the `about` artisan command output
+* the package no longer writes to the application log
+
+Added:
+
+* `tlds.cache.store` setting selects which cache store the TLD data is kept in
+* `tld:update` reports source lines that were rejected
+* `TldManager::skipped()` returns the lines rejected by the last `process()` call
+* `@method` annotations on the `Tlds` facade
+
+Fixed:
+
+* declared the `illuminate/*` components the package uses; only `illuminate/support` was declared,
+  and the artisan command could not be loaded without `laravel/framework` present
+* the conflict with `hampel/validate-laravel` below 2.0 is now applied; the `composer.json` property
+  was misspelled and had no effect
+* corrected the `DomainIn` example in the README
+
+To read the TLD list from a local file or another source, implement
+`Hampel\Tlds\Fetcher\TldFetcher` and bind it in your application's service provider. See the
+README.
+
 2.1.0 (2024-05-08)
 ------------------
 
